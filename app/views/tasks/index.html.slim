@@ -1,0 +1,9 @@
+- unless @tasks.nil? || @tasks&.count&.zero?
+  - @tasks&.each_slice(3) do |c1, c2, c3|
+    .row
+      .col-md-4
+          = render 'task_card', c: c1
+      .col-md-4
+          = render 'task_card', c: c2
+      .col-md-4
+          = render 'task_card', c: c3

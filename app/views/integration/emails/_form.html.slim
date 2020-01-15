@@ -1,0 +1,86 @@
+= form_with(model: email, local: true) do |form|
+  .form-row
+    .form-group.col-md-6
+      label.d-block
+        | Name: 
+        span.tx-danger
+          | *
+      = form.text_field :name, class: "form-control", placeholder: "Our Email Integration"
+      .tx-danger.tx-12
+        = inline_errors(email, :name)
+    .form-group.col-md-4
+      label.d-block
+        | Authentication Method: 
+        span.tx-danger
+          | *
+      /= form.text_field :channels, class: "form-control", placeholder: "#emu-alerts"
+      = form.select(:authentication, Integration::Email.authentications.keys.map {|p| [p.titleize,p]}, {}, { :class => "custom-select" })
+      .tx-danger.tx-12
+        = inline_errors(email, :authentication)
+    .form-group.col-md-2
+      label.d-block
+        | Body Format: 
+        span.tx-danger
+          | *
+      /= form.text_field :channels, class: "form-control", placeholder: "#emu-alerts"
+      = form.select(:body_format, Integration::Email.body_formats.keys.map {|p| [p.titleize,p]}, {}, { :class => "custom-select" })
+  .form-row
+    .form-group.col-md-12
+      label.d-block
+        | Mail Host: 
+        span.tx-danger
+          | *
+      = form.text_field :host, id: :host, class: "form-control", placeholder: 'mail.domain.com'
+      .tx-danger.tx-12
+        = inline_errors(email, :host)
+  .form-row
+    .form-group.col-md-6
+      label.d-block
+        | From: 
+        span.tx-danger
+          | *
+      = form.text_field :from, class: "form-control", placeholder: "big.bird@emu.com"
+      .tx-danger.tx-12
+        = inline_errors(email, :from)
+    .form-group.col-md-6
+      label.d-block
+        | Port: 
+        span.tx-danger
+          | *
+      = form.text_field :port, class: "form-control", placeholder: '465'
+      .tx-danger.tx-12
+        = inline_errors(email, :port)
+  .form-row
+    .form-group.col-md-6
+      .custom-control.custom-switch.mg-l-5
+        = form.check_box :ssl, class: "custom-control-input"
+        = form.label(:ssl, "Use SSL/TLS", class: "custom-control-label")
+        .tx-danger.tx-12
+          = inline_errors(email, :ssl)
+  hr
+    .accordion#accordion
+      .h6
+        | Authentication Details
+      div
+        .form-row
+          .form-group.col-md-6
+            label.d-block
+              | Username: 
+            = form.text_field :user, id: :username, class: "form-control"
+            .tx-danger.tx-12
+              = inline_errors(email, :user)
+
+          .form-group.col-md-6
+            label.d-block
+              | Password:
+            = form.password_field :password, id: :password, class: "form-control"
+            .tx-danger.tx-12
+              = inline_errors(email, :password)
+  hr
+  = form.submit "Save E-mail Integration", class: "btn btn-primary"
+
+  script
+    - unless email.user.blank? && email.password.blank?
+      | $('#accordion').accordion({heightStyle: 'content', collapsible: true});
+    - else
+      | $('#accordion').accordion({active: false, heightStyle: 'content', collapsible: true});

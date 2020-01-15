@@ -1,0 +1,216 @@
+- unless c.nil?
+  .card
+    div.card-img-top.ht-80
+      canvas.bg-gray-100.pd-t-10[id="chart-#{c.id}"]
+      /- alert_chart_max(c)
+      /= area_chart generate_alert_chart(c), height: '100px', code: true, library: alert_chart_options, id: "chart-#{c.id}", colors: ["rgb(16,183,89, 0.0)", "#666"]
+    .card-body
+      h5.card-title
+        = c.name
+      p.text-muted.ht-50
+        = humanize_duplication_enum(c)
+      fieldset.form-fieldset.tx-11.tx-light.pd-0.pd-l-10
+        legend
+          | Integrations
+        .tx-14
+          p.card-text
+            .form-row
+              = form_with(model: c) do |form|
+                = form.fields_for :actions do |a|
+                  /- puts c.actions[a.index].inspect
+                  - switch_disabled = c.actions[a.index].integratable.nil? ? true : false
+                  - if a.index == 0
+                    - name = 'Slack'
+                  - elsif a.index == 1
+                    - name = 'Trello'
+                  - elsif a.index == 2
+                    - name = 'Mail'
+                  .col-md-4
+                    .custom-control.custom-switch
+                      = a.check_box :enabled, {class: "custom-control-input", disabled: switch_disabled}, "true", "false"
+                      = a.label :enabled, "#{name}", class: 'custom-control-label d-flex'
+          
+      .card-text.mg-t-10
+        ul.pd-l-15
+          li
+            | Connects to 
+            /class: "tooltip-wide", title: "#{search.query}", data: { template: "", toggle: "tooltip", placement: "bottom" }
+            a[href="javascript://" data-placement="top" title=c.search.elastic_endpoint.name data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-search-query'></div></div>" data-toggle="tooltip"]
+              = truncate(c.search.elastic_endpoint.name,length:25, omission: '...')
+          li
+            | Queries with 
+            a[href="javascript://" data-placement="top" title=c.search.query data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-search-query'></div></div>" data-toggle="tooltip"]
+              = truncate(c.search.name,length:35, omission: '...')
+      p.card-text.tx-15
+        small.text-muted
+          - last_executed = last_alert_execution(c)
+          - unless last_executed.nil?
+            = "Last executed on #{last_executed}"
+          - else
+            | Never executed
+      
+    .card-footer
+      .row.row-xs
+        /.col-md-12
+          /
+        .col-md-12
+          .btn-toolbar[role="toolbar"]
+            .btn-group[role="group"]
+              = link_to edit_permanent_path(c), class: 'btn btn-outline-primary btn-sm' do
+                | Edit
+              = link_to permanent_path(c), class: 'btn btn-outline-primary btn-sm' do
+                | History
+              - toggle_schedule_disabled = c&.schedules&.count&.zero? ? true : false
+              - unless toggle_schedule_disabled
+                - unless schedules_disabled?(c)
+                  = link_to disable_permanents_path(c), class: 'btn btn-outline-primary btn-sm' do
+                    | Disable
+                - else
+                  = link_to enable_permanents_path(c), class: 'btn btn-outline-primary btn-sm' do
+                    | Enable
+              = link_to permanent_path(c), data: {\
+                title: "Delete #{c.name}?",\
+                confirm: "<h5 class='tx-danger'><p>Confirm deletion for alert: #{c.name}</p></h5><p>All schedules referencing this alert will also be removed.</p><p>This action cannot be undone.</p>",\
+                commit: 'Yes, delete this alert', 'cancel-class': 'btn-secondary'},\
+                method: :delete,\
+                class: 'btn btn-outline-danger btn-sm' do
+                  | Delete
+
+  javascript:
+    var ctx = document.getElementById("chart-#{c.id}").getContext('2d');
+
+  - unless alert_chart_max(c).nil?
+    javascript:
+      var raw_event_data = '#{generate_alert_raw_event_chart(c).chart_json.html_safe}';
+      var actionable_event_data = '#{generate_alert_actionable_event_chart(c).chart_json.html_safe}';
+      var parsed_raw_events = JSON.parse(raw_event_data);
+      var parsed_actionable_events = JSON.parse(actionable_event_data);
+
+      var gradient_actionable = ctx.createLinearGradient(0, 0, 0, 400);
+      var gradient_raw = ctx.createLinearGradient(0, 0, 0, 400);
+
+      gradient_actionable.addColorStop(0, 'rgba(0,204,204,0.5)');
+      gradient_actionable.addColorStop(0.3, 'rgba(0,204,204, 0.0)');
+      gradient_raw.addColorStop(0, 'rgba(16,89,189,0.1)');
+      gradient_raw.addColorStop(0.4, 'rgba(16,89,189,0.0)');
+
+      var data  = {
+        datasets: [{
+          backgroundColor: gradient_actionable,
+          pointBackgroundColor: 'rgba(127,127,129,0.3)',
+          borderWidth: 1,
+          borderColor: 'rgba(0,204,204,0.0)',
+          data: parsed_actionable_events, //[12, 19, 3, 5, 2, 3],
+          fill: true,
+          type: 'line',
+          label: "Alertable Events"
+        },
+        {
+          backgroundColor: gradient_raw,
+          pointBackgroundColor: 'rgba(16,89,189,1.0)',
+          borderWidth: 1.2,
+          borderColor: 'rgba(16,89,189,0.0)',
+          data: parsed_raw_events, //[12, 19, 3, 5, 2, 3],
+          fill: true,
+          type: 'line',
+          label: "Raw Events",
+          //steppedLine: true
+        }]
+      };
+  - else
+    javascript:
+      var data  = {
+        datasets: []
+      };
+  
+  javascript:
+    var opts = {
+      maintainAspectRatio:false,
+      animation:false,
+      tooltips:{
+        displayColors:true,
+        mode:"index",
+        intersect:true,
+        position:"nearest",
+        bodyFontFamily:"Roboto",
+        borderColor: '#FF0000'
+        },
+        legend:{
+          display:false,
+          labels:{
+            display:false
+          }
+        },
+        title:{
+          fontSize:20,
+          fontColor:"#333"
+        },
+        scales:{
+          yAxes:[{
+            ticks: {
+              display:false,
+              fontSize:10,
+              fontStyle:"500",
+              fontFamily:"-apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+            },
+            scaleLabel:{
+              fontSize:16,
+              fontColor:"#333"
+            },
+            //type:"logarithmic",
+            gridLines:{
+              display:false,
+              drawBorder:false,
+              tickMarkLength: 0
+            }}],
+          xAxes:[{
+            gridLines:{
+              drawOnChartArea:false,
+              display:false,
+              drawBorder:true,
+              color: "rgba(127,127,129,1)",
+              tickMarkLength: 0
+            },
+            scaleLabel:{
+              fontSize:16,
+              fontColor:"#333",
+              
+            },
+            time: {
+              unit:"hour",
+            },
+            ticks:{
+              display:false,
+              fontSize:10,
+              fontStyle:"500",
+              fontFamily:"-apple-system, BlinkMacSystemFont, Roboto, sans-serif",
+            },
+            type:"time",
+            barThickness: 2,
+            //maxBarThickness: 8,
+            distribution: 'linear'
+          }]},
+            //colors:["rgb(16,183,89, 0.0)","#666"],
+            responsive:true,
+            ticks:{
+              display:false
+            },
+            hover:{
+              mode:"index",
+              intersect:true
+            },
+            elements:{
+              point:{
+                radius:0,
+                hoverRadius:3,
+                pointStyle:"circle"
+              },
+              line:{
+                fill:true,
+                fillColor:"transparent",
+                tension: 0.5
+              }
+            }
+          };
+
+    new Chart(ctx, {data:data, options:opts});

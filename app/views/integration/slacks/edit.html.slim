@@ -1,0 +1,7 @@
+.row
+  .col-sm-10
+    = render 'shared/errors', c: @slack
+    .card
+      .card-body
+        = render 'form', slack: @slack
+              

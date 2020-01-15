@@ -1,0 +1,39 @@
+- unless c.nil?
+  .card
+    = form_with(model: c, url: task_path(c), method: :put, local: true) do |form|
+      .card-body
+        h5.card-title.mg-b-5
+          = c.type.split('::').last.pluralize.titleize
+        p.card-text
+          .form-row
+            .form-group.col-md-12
+              label.d-block
+                | Cron Expression: 
+                span.tx-danger
+                  | *
+              = form.text_field :cron, class: 'tx-roboto-mono form-control', autofill: false
+              .tx-danger.tx-12
+                = inline_errors(c, :cron)
+          .form-row
+            .form-group.col-md-6
+              .custom-control.custom-switch
+                = form.check_box :enabled, class: "custom-control-input"
+                = form.label(:enabled, "Enabled", class: "custom-control-label")
+        small.text-muted.tx-13
+            = "Last executed: #{task_last_execution(c)}"
+      .card-footer
+        = form.submit "Update Job", class: "btn btn-primary btn-sm mg-r-5"
+        = link_to task_path(c), class: 'btn btn-light btn-sm' do
+          | Run now
+    /.card-footer
+      .row.row-sm
+        .col-md-8
+          .btn-toolbar[role="toolbar" aria-label="Toolbar with button groups"]
+            .btn-group.mr-2[role="group" aria-label="First group"]
+              = link_to edit_permanent_path(c) do
+                button.btn.btn-outline-primary.btn-sm[type="button"]
+                  | Edit
+              button.btn.btn-outline-primary.btn-sm[type="button"]
+                | History
+              button.btn.btn-outline-primary.btn-sm[type="button"]
+                | Disabl

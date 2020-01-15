@@ -1,0 +1,3 @@
+- if alert.errors.any?
+  .alert.alert-danger
+    = "#{pluralize(alert.errors.count, 'error')} prevented this alert from being saved."

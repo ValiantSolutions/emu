@@ -1,0 +1,23 @@
+.pos-absolute.t-65.r-20.z-index-200
+  .toast.wd-400[role="alert" data-delay="7000" aria-live="assertive" aria-atomic="true"]
+    .toast-header.bg-light
+      h6#toast-title.tx-inverse.tx-12.mg-b-0.mg-r-auto
+        - if flash[:notice] || defined?(notice)
+          | Success
+        - else
+          | Oops!
+      button.ml-2.mb-1.close.tx-normal[type="button" data-dismiss="toast" aria-label="Close"]
+        span[aria-hidden="true"]
+          | ×
+    - flash_class = "tx-pink"
+    - flash_class = "tx-success" if flash[:notice] || (defined?(notice) && !notice.blank?)
+    
+    .toast-body#toast-body[class="#{flash_class}"]
+      = render 'shared/toast_messages', f: flash, n: notice
+
+- if (defined?(notice) && !notice.blank?)
+  javascript:
+    $(".toast").toast('show');
+/- if (defined?(flash[:alert]) && !flash[:alert].blank?)
+    javascript:
+      $(".toast").delay(300).effect('shake');

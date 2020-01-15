@@ -1,0 +1,52 @@
+.pd-l-2.pd-t-10.ht-100p
+  .section-nav
+    label.nav-label
+      | Template Variables
+    nav#navSection.nav.flex-column
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The executing alert name."]
+        | alert_name 
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The executed search name."]
+        | search_name 
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The actual Elasticsearch query that was executed."]
+        | search_query
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The Elasticsearch cluster name."]
+        | endpoint_name 
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="All unprocessed events returned from the search."]
+        | raw_events
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The total number of search results returned."]
+        | raw_event_count 
+      a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The current UTC time in ISO8601 format. Use with the Liquid date filter to apply formatting."]
+        | current_timestamp
+  - if @show == "conditional" || @show == 'all'
+    .section-nav
+      label.nav-label
+        | Conditional Only Vars
+      nav#navSection.nav.flex-column
+        a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="Applies only to conditional templates, this is the current event being evaluated."]
+          | event
+        a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The index of the event being evaluated."]
+          | event_index
+        a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The search score of the event."]
+          | event_score 
+  - if @show == "payload" || @show == 'all'
+    .section-nav
+      label.nav-label
+        | Payload Only Vars
+      nav#navSection.nav.flex-column
+        a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="An array containing all the conditionally passing search results. Access metadata fields via '_emu_id', '_emu_index', and '_emu_score'."]
+          | actionable_events
+        a.nav-link.tx-roboto-mono.tx-13[href="#" data-toggle="tooltip" data-placement="left" title="The number of search results that are actionable."]
+          | actionable_event_count
+    .section-nav
+      label.nav-label
+        | Action Blocks
+      nav#navSection.nav.flex-column
+
+        a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% slack %}<br/>&nbsp;&nbsp;The Slack Message!<br/>{% endslack %}"]
+          | slack
+        a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% trello list: 'The List Name', title: 'The Card Title', label: 'elk' %}<br/>&nbsp;&nbsp;The Card Body!<br/>{% endtrello %}"]
+          | trello
+        a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% email subject: 'The Email Subject', to: 'alerts@domain.com admins@emu.com' %}<br/>&nbsp;&nbsp;The Email Body!<br/>{% endemail %}"]
+          | email
+javascript:
+  $('[data-toggle="tooltip"]').tooltip({ container: 'body' });

@@ -1,0 +1,18 @@
+
+- toast_messages = ""
+- toast_error_count = 0
+- f.each do |key, value|
+  - if key.eql?('alert') || key.eql?('error')
+    - toast_messages = "#{toast_messages}<li>#{value}</li>"
+    - toast_error_count += 1 
+  - elsif !value.to_s.eql?("true") && !value.to_s.eql?("false")
+    - toast_messages = "#{toast_messages}#{value}<br/>"
+- if !toast_error_count.zero?
+  javascript:
+    $("#toast-title").html("Oops!");
+    $("#toast-body").html("#{pluralize(toast_error_count, 'error')} need to be addressed before proceeding.<br/><ul>#{toast_messages.html_safe}</ul>")
+    $(".toast").toast('show').delay(300).effect('shake');
+- elsif !toast_messages.blank?
+  javascript:
+    $("#toast-body").html("#{toast_messages.html_safe}");
+    $(".toast").toast('show');

@@ -1,0 +1,62 @@
+#dashboard-chart.flot-chart
+
+javascript:
+  var dashboardAllEvents = "#{@stats[:charts][:lifetime_events]}"
+  var dashboardActionableEvents = "#{@stats[:charts][:actionable_events]}"
+  var plot = $.plot('#dashboard-chart', [
+    {
+      data: JSON.parse(dashboardAllEvents),
+      color: '#e3e7ed',
+      lines: {
+        show: true,
+        lineWidth: 1.5,
+        fill: true,
+        fillColor: { colors: [ { opacity: 0.5}, { opacity: .75 } ] }
+      }
+    }, 
+    {
+      data: JSON.parse(dashboardActionableEvents),
+      color: '#00cccc',
+      bars: {
+        show: true,
+        barWidth: 0.5,
+        lineWidth: 0.5,
+        fill: true,
+        align: "center",
+        hoverable: true,
+        clickable: true
+      }
+    }], 
+    {
+      series: {
+        shadowSize: 0
+      },
+      grid: {
+        aboveData: true,
+        color: '#e5e9f2',
+        borderWidth: 0,
+        labelMargin: 0
+      },
+        yaxis: {
+          show: false,
+          //showTickLabels: "all",
+          //min: 0,
+          max: Number("#{calc_max_for_flot_array(@stats[:charts][:lifetime_events])}")*1.5,
+          transform: function(v) {return Math.log(v+15); /*move away from zero*/},
+          //tickDecimals: 3
+          //ticks: 10,
+          //minTickSize: 10,
+          //tickSize: 10
+        },
+        xaxis: {
+          //mode: "time", 
+          //timeformat: "%m/%d/%Y",
+          //timezone: 'browser',
+          //timeBase: "milliseconds",
+          //type: 'logarithmic',
+          show: false,
+          color: 'rgba(255,255,255,.2)',
+          //showTickLabels: "major",
+          tickColor: 'rgba(0,0,0,0.04)'
+        }
+      });

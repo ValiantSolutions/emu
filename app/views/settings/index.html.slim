@@ -1,0 +1,53 @@
+.row
+  .col-md-6
+    .card
+      = form_with(model: @setting, method: :put, local: true) do |form|
+        .card-body
+          .alert.alert-warning
+            .alert-heading
+              strong
+                | Warning!
+            | You can break things here.
+          p.card-text
+            .form-group
+              label.d-block
+                | Query scroll size: 
+                span.tx-danger
+                  | *
+              = form.text_field :scroll_size, class: 'form-control', autofill: false, data: {placement: 'right', toggle: 'tooltip', trigger: 'focus', html: true, title: 'Page size for search queries.<br/>Default: 500'}
+              .tx-danger.tx-12
+                = inline_errors(@setting, :scroll_size)
+            .form-group
+              label.d-block
+                | Debugger result limit:  
+                span.tx-danger
+                  | *
+              = form.text_field :debug_result_count, class: 'form-control', autofill: false, data: {placement: 'right', toggle: 'tooltip', trigger: 'focus', html: true, title: 'Number of events to return while using the debugger. Default: 5'}
+              .tx-danger.tx-12
+                = inline_errors(@setting, :debug_result_count)
+            .form-group
+              label.d-block
+                | Inactive account age: 
+                span.tx-danger
+                  | *
+                .input-group.mg-b-10
+                  = form.text_field :inactive_account_age, class: 'form-control', autofill: false, data: {placement: 'right', toggle: 'tooltip', trigger: 'focus', html: true, title: 'Disable accounts after X days of inactivity. Default: 30'}
+                  .input-group-append
+                    span#basic-addon2.input-group-text
+                      | days
+              .tx-danger.tx-12
+                = inline_errors(@setting, :inactive_account_age)
+            .form-group
+              label.d-block
+                | Prune job history after: 
+                span.tx-danger
+                  | *
+                .input-group.mg-b-10
+                  = form.text_field :job_history_age, class: 'form-control', autofill: false, data: {placement: 'right', toggle: 'tooltip', trigger: 'focus', html: true, title: 'Remove job history & logs after X days. Default: 90'}
+                  .input-group-append
+                    span#basic-addon2.input-group-text
+                      | days
+              .tx-danger.tx-12
+                = inline_errors(@setting, :inactive_account_age)
+        .card-footer
+          = form.submit "Save settings", class: "btn btn-primary btn-sm"

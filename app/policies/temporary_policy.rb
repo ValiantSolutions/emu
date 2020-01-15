@@ -1,0 +1,3 @@
+class TemporaryPolicy < AllowAllPolicy
+
+end

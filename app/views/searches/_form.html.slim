@@ -1,0 +1,59 @@
+= javascript_include_tag 'form-tags'
+
+= form_with(model: search, local: true) do |form|
+  .form-row
+    .form-group.col-md-6
+      label.d-block
+        | Name: 
+        span.tx-danger
+          | *
+      = form.text_field :name, class: "form-control", placeholder: "Something to remember the search by", autocomplete: "off"
+      .tx-danger.tx-12
+        = inline_errors(search, :name)
+    .form-group.col-md-6
+      label.d-block
+        | Elasticsearch Cluster: 
+        span.tx-danger
+          | *
+      = form.select(:elastic_endpoint_id, ElasticEndpoint.all.map {|p| [p.name,p.id]}, {}, { :class => "custom-select" })
+      .tx-danger.tx-12
+        = inline_errors(search, :elastic_endpoint_id)
+  .form-group
+    label.d-block
+      | Index Pattern(s): 
+      span.tx-danger
+        | *
+    = form.text_field :indices, class: "form-control", autocomplete: "off", :data => { role: "tagsinput", toggle: "tooltip" }
+    .tx-danger.tx-12
+      = inline_errors(search, :indices)
+  .form-group
+    label.d-block
+      | Search Query: 
+      span.tx-danger
+        | *
+    = form.text_field :query, class: "tx-roboto-mono form-control", placeholder: "eg: user:john.doe AND _exists_:email"
+    .tx-danger.tx-12
+      = inline_errors(search, :query)
+  hr
+  = form.submit "Save search", class: "btn btn-primary"
+
+/= javascript_include_tag 'search'
+
+javascript:
+ 
+  var tagTextbox = $('#search_indices').tagsinput({
+    confirmKeys: [13, 44, 32],
+    trimValue: true
+  });
+
+  if(tagTextbox && tagTextbox[0] !== undefined && tagTextbox[0] != false) {
+    var tooltipTarget = tagTextbox[0].$container;
+    if(tooltipTarget && tooltipTarget !== undefined && tooltipTarget != false) {
+      var realTextbox = tagTextbox[0].$input
+      realTextbox.attr("autocomplete", "off");
+      tooltipTarget.attr("data-placement", "left");
+      realTextbox.attr("data-lpignore", "true");
+      tooltipTarget.attr("title", "Can be a single index, an index pattern (eg: logstash-*), or a combination of the two.");
+      tooltipTarget.tooltip();
+    } 
+  }

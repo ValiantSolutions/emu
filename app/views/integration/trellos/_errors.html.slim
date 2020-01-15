@@ -1,0 +1,12 @@
+- unless trello&.errors&.messages&.empty?
+  - trello_errors = ""
+  - trello&.errors&.messages&.each do |e,m|
+    - next if m.first.blank?
+    - trello_errors = "#{trello_errors}<li>#{m.first}</li>"
+
+  - unless trello_errors&.strip&.blank?
+    javascript:
+      $("#toast-title").html("Oops!");
+      $("#toast-body").html("#{pluralize(trello.errors.count, 'error')} need to be addressed before saving this integration.<br/><ul>#{trello_errors.html_safe}</ul>")
+      $("#off-canvas").removeClass('show');
+      $(".toast").toast('show').delay(300).effect('shake');

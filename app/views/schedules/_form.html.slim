@@ -1,0 +1,51 @@
+= form_with(model: schedule, local: true) do |form|
+  .form-row
+    .form-group.col-md-5
+      label.d-block
+        | Alert: 
+        span.tx-danger
+          | *
+      = form.select(:alert_id, Permanent.all.map {|p| [p.name,p.id]}, {}, { :class => "custom-select" })
+      .tx-danger.tx-12
+        = inline_errors(schedule, :alert_id)
+    .form-group.col-md-3
+      label.d-block
+        | Cron Expression: 
+        span.tx-danger
+          | *
+      = form.text_field :cron, class: 'tx-roboto-mono form-control', autofill: false
+      .tx-danger.tx-12
+        = inline_errors(schedule, :cron)
+    .form-group.col-md-4
+      label.d-block
+        | Time Range: 
+        span.tx-danger
+          | *
+      .input-group
+        .input-group-prepend
+          span.input-group-text
+            | Last
+        = form.text_field :range, class: 'form-control', autofill: false
+        = form.select(:period, Schedule.periods.keys.map {|p| [p,p]}, {}, { :class => "custom-select" })
+      .tx-danger.tx-12
+        = inline_errors(schedule, :range)
+
+  .divider-text.mg-b-20
+    a#schedule-generator-expand[data-toggle="collapse" href="#cronCollapse" role="button" aria-expanded="false" aria-controls="cronCollapse"]
+      | Show Cron Generator 
+      i[data-feather="clock"]
+  #cronCollapse.collapse.mg-t-5
+    .form-group.alert.bg-gray-100
+      label.d-block.tx-dark
+        | Executes: 
+      #schedule-generator.tx-light.tx-13
+  /.form-group
+    label.d-block
+      | Time Range: 
+    = form.text_field :range
+    .tx-danger.tx-12
+      = inline_errors(schedule, :range)
+     
+  = form.submit "Save schedule", class: "btn btn-primary"
+
+= javascript_include_tag 'schedule'

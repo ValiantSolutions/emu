@@ -1,0 +1,148 @@
+- if current_user.admin? && (Task&.all&.count&.zero? || Setting&.all&.count != 1)
+  .alert.alert-warning.alert-dismissible.fade.show[role="alert"]
+    .alert-heading
+      strong
+        | Setup Incomplete
+      ul.mg-b-0
+        - if Task&.all&.count&.zero?
+          li
+            | The default maintenance jobs do not exist; this may indicate a problem with the database setup. 
+            = link_to :tasks do
+              | Click here 
+            | to finish important setup steps.
+        - if Setting&.all&.count != 1
+          li
+            | The default settings are not set; this may indicate a problem with the database setup.  
+            = link_to :settings do
+              | Click here 
+            | to finish important setup steps.
+    button.close[type="button" data-dismiss="alert" aria-label="Close"]
+      span[aria-hidden="true"]
+        | ×
+#dashboard-stats
+
+.row.mg-b-10
+.row.row-xs
+  .col-sm-7.col-lg-7.col-md-7
+    .card
+      .card-header.pd-y-20.d-md-flex.align-items-center.justify-content-between
+        h6.mg-b-0
+          | Alert Statistics
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.d-block.wd-10.ht-10.bg-teal.rounded.mg-r-5
+            span.tx-sans.tx-uppercase.tx-12.tx-medium.tx-color-03
+              | Alertable Events
+          li.list-inline-item.d-flex.align-items-center.mg-l-5
+            span.d-block.wd-10.ht-10.bg-gray-200.rounded.mg-r-5
+            span.tx-sans.tx-uppercase.tx-12.tx-medium.tx-color-03
+              | All Events
+      .card-body.pos-relative.pd-0
+        .pos-absolute.t-20.l-20.wd-xl-100p.z-index-10
+          .row
+            .col-sm-5
+              h3#jumbotron-alertable-event-count.tx-normal.tx-rubik.tx-spacing--2.mg-b-5.tx-40
+                = "#{human_readable_num(@stats[:events][:actionable_event_count])}"
+              h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-10
+                | Alertable Events
+            /.col-sm-5.mg-t-20.mg-sm-t-0
+              h3.tx-normal.tx-rubik.tx-spacing--2.mg-b-5.tx-40
+                = ((@stats[:events][:actionable_event_count] / @stats[:events][:all_searched][:current].to_f)*100).round(3)
+                | %
+              h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-10
+                | Of  Are Alerts
+        /- unless @stats[:events][:actionable_event_count].zero?
+        #dashboard-jumbotron
+          = area_chart dashboard_jumbotron_path, refresh: 15, height: '350px', id: 'jumbotron-chart', thousands: ",", library: {\
+              responsive: true,\
+              maintainAspectRatio: false,\
+              legend: {\
+                display: false,\
+                labels: {\
+                  display: false\
+                }\
+              },\
+              hover: {\
+                mode: 'index',\
+                intersect: true,\
+              },\
+              tooltips: {\
+                mode: 'index',
+                intersect: true,\
+                position: 'nearest',\
+                bodyFontFamily: '-apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif',\
+              },\
+              elements: {\
+                point: {\
+                  radius: 1.8,\
+                  hoverRadius: 3,\
+                  pointStyle: 'circle',\
+                },\
+                line: {\
+                  tension: 0.25,\
+                },\
+              },\
+              scales: {\
+                xAxes: [{\
+                  type: 'time',\
+                  distribution: 'series',
+                  time: {\
+                    unit: 'minute',\
+                  },\
+                  gridLines: {\
+                    color: '#e5e9f2',\
+                    drawOnChartArea: false,\
+                    zeroLineColor: 'rgba(50,58,78,0.0)',\
+                    display: false,\
+                    zeroLineWidth: 0,\
+                    tickMarkLength: 0\
+                  },\
+                  ticks: {\
+                    display: false,\
+                    fontColor: '#8392a5',\
+                    fontSize: 10,\
+                    fontStyle: '500',\
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif',\
+                    maxTicksLimit: 5,\
+                  }\
+                }],\
+                yAxes: [{\
+                  type: 'logarithmic',\
+                  gridLines: {\
+                    color: '#ebeef3',\
+                    drawBorder:false,\
+                    tickMarkLength: 0,\
+                    display: false\
+                  },\
+                  ticks: {\
+                    display: false,\
+                    fontColor: '#8392a5',\
+                    fontSize: 10,\
+                    fontStyle: '500',\
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif',\
+                    maxTicksLimit: 7,\
+                  }\
+                }],\
+              }\
+          }
+  .col-sm-5.col-lg-5.col-md-5
+    .card
+      .card-header.pd-y-20.d-md-flex.align-items-center.justify-content-between
+        h6.mg-b-0
+          | History
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.d-block.wd-10.ht-10.bg-df-1.rounded.mg-r-5
+            span.tx-sans.tx-uppercase.tx-12.tx-medium.tx-color-03
+              | Last 10 Jobs With Alerts
+      .card-body.pos-relative.pd-0
+        #timeline-container
+          = render 'timeline', job_timeline: @job_timeline
+
+  = javascript_include_tag 'charts'
+  = javascript_include_tag 'dashboard'
+
+  javascript:
+    
+    $("#timeline-container").slimScroll({height: "465px", size: "3px"});
+    getStats("#{dashboard_stats_path(:format => :js )}");

@@ -1,0 +1,22 @@
+- payload_body = job&.alert&.payload&.log&.body
+.card
+  .card-body
+    h5.card-title
+      | Payload
+    - if payload_body.nil?
+      .alert.alert-danger
+        strong
+          | Oops!
+        br/
+        | There is an error with your payload template -- check the syntax and try again.
+    - else
+      .divider-text.mg-b-20
+        | HTML
+      p.card-text
+        = payload_body.html_safe
+      .divider-text.mg-b-20
+        | Plaintext
+      p.card-text
+        textarea.ht-300.tx-roboto-mono.tx-12.form-control[rows=10 style='resize: none;']
+          = payload_body
+          

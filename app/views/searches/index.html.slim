@@ -1,0 +1,87 @@
+- if @elastic_endpoints&.count&.zero?
+  .row
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | Hold On A Second
+          p.card-text
+            | You'll need to configure at least one Elasticsearch cluster before you can create a search.
+        .card-footer 
+          = link_to :new_elastic_endpoint do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  New Endpoint
+- else
+  .row.mg-b-15
+    .col-sm-12
+      .d-flex.justify-content-end
+        = link_to :new_search do
+          button.btn.btn-primary[type="button"]
+            i[data-feather="plus"]
+            |  New Search
+  .row
+    .col-sm-12
+      .table-responsive-sm
+        table.table.table-hover#search-table
+          thead
+            tr
+              th[scope="col"]
+                | Name
+              th[scope="col"]
+                | Query
+              th[scope="col"]
+                | Cluster
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @searches&.each do |search|
+              tr
+                td
+                  = search.name
+                td
+                  span.tx-roboto-mono.tx-13.tx-pink
+                    = truncate(search.query, length: 55, separator: ' ', omission: '... ') {\
+                    link_to "(see full query)", "#", class: "tooltip-wide", title: "#{search.query}", data: { template: "<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-search-query'></div></div>", toggle: "tooltip", placement: "bottom" }\
+                    }
+                td
+                  = link_to elastic_endpoint_path(search.elastic_endpoint), class: 'tx-inverse' do
+                    = truncate(search.elastic_endpoint.name, length: 35, separator: ' ', omission: '... ') {\
+                      link_to "(see full name)", "#", class: "tooltip-wide", title: search.elastic_endpoint.name, data: { template: "<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-search-query'></div></div>", toggle: "tooltip", placement: "bottom" }\
+                    }
+
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                    .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                      = link_to edit_search_path(search), :class => "dropdown-item" do
+                        | Edit
+                      .dropdown-divider 
+                      = link_to search_path(search), data: {\
+                        title: "Delete #{search.name}?",\
+                        verify: "#{search.name}",\
+                        verify_text: "Type '#{search.name}' to confirm",\
+                        confirm: '<h5 class="tx-danger">All alerts and schedules linked to this search will also be deleted. This effectively will remove ALL linked items and may have unintended consequences.</h5>',\
+                        commit: 'Yes, delete this search.', 'cancel-class': 'btn-secondary'},\
+                        class: "dropdown-item",\
+                        method: :delete do
+                          | Delete
+      = javascript_include_tag 'datatable'
+      
+      javascript:
+
+        $('#search-table').DataTable({
+          language: {
+            searchPlaceholder: 'Search...',
+            sSearch: '',
+            lengthMenu: '_MENU_ items/page',
+          },
+        columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+        });
+        $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+
+
+        $('[data-toggle="popover"]').popover({
+          html: true,
+          template: '<div class="popover popover-header-primary event-debug-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+        });

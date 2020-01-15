@@ -1,0 +1,31 @@
+- conditional_events = debug_conditional_against_results(job)
+table.table
+  thead
+    tr
+      th[scope="col" style="width:75%"]
+        | Event
+      th[scope="col"]
+        | Conditional
+  tbody
+    - conditional_events&.each do |c|
+      tr
+        th[scope="row"]
+          .conditional-fields
+            - c[:event].each_with_index do |(field,value), index|
+              a.tx-12[href="javascript://" data-trigger="focus" data-container="body" data-toggle="popover" data-placement="top" data-title="#{field}" data-content="<pre>#{JSON.neat_generate(value, padding: 2, aligned: true, sort: true, wrap: true )}</pre>"]
+                = "#{field}"
+              - unless index == c[:event].length - 1
+                span.tx-9.text-muted
+                |  / 
+        td
+          - outcome_color = (c[:outcome] == true ? "success" : "danger")
+          span.badge[class="badge-#{outcome_color}"]
+            = c[:outcome].to_s.upcase
+
+javascript:
+  $('[data-toggle="popover"]').popover({html: true, template: '<div class="popover popover-header-primary event-debug-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'});
+  $('html, body').animate({ 
+  scrollTop: $(document).height()-$(window).height()}, 
+  1400, 
+  "easeOutQuint"
+  );

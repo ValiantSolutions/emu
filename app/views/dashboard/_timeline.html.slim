@@ -1,0 +1,75 @@
+.timeline-group.mg-t-15
+  - unless job_timeline.count.zero?
+    - job_timeline.each do |j|
+      .timeline-item
+        .timeline-time.tx-12
+          = j.created_at.in_time_zone(@user_tz).strftime("%b %d")
+          br
+          span.text-muted
+             = j.created_at.in_time_zone(@user_tz).strftime("%l:%M%P")
+        .timeline-body
+          h5.mg-b-0
+            = j.alert.name
+            ul.list-inline.d-flex
+              li.list-inline-item.d-flex.align-items-center
+                a.badge.mg-t-5.btn-icon.btn-xs.badge-lighter.tx-sans.tx-12.tx-medium.alert-link.popover-badge[href="javascript://" data-title="Raw Query<a class='btn btn-info btn-icon mg-t-0 btn-xs lh-3 float-right clipboard-copy'><i class='clipboard-copy-icon'></i></a>" data-trigger='manual' data-toggle="popover" data-placement="right" data-content="<pre class='copy-target'>#{JSON.neat_generate(JSON.parse(j.raw_query), padding: 2, aligned: true, sort: true, wrap: true )}</pre>"]
+                  = "Raw Query"
+              
+          .row
+            .col-sm-6
+              h3.tx-normal.tx-rubik.tx-spacing--2.mg-b-5.text-tx-inverse.tx-30
+                = j.raw_event_count
+              h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-10
+                = "Total #{'Result'.pluralize(j.raw_event_count)}"
+            .col-sm-6
+              h3.tx-normal.tx-rubik.tx-spacing--2.mg-b-5.tx-pink.tx-30
+                = j.actionable_event_count
+              h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-10
+                = "Alertable #{'Event'.pluralize(j.actionable_event_count)}"
+          .timeline-divider-text.mg-b-20
+            = "Completed @ #{j.updated_at.strftime("%l:%M%P")}"
+
+    javascript:
+      $('[data-toggle="popover"]').popover(
+        {
+          html: true, 
+          template: '<div class="popover popover-header-primary event-debug-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+        });
+
+      $('.popover-badge').on('click', function(e) {
+        e.preventDefault();
+        $('.popover-badge').popover('hide');
+        $(this).popover('toggle');
+      });
+
+      //$( document ).ready(function() {
+        
+      //});
+
+      
+
+      $(document).on('click touchstart', function(e){
+        //e.preventDefault();
+        if ($('.event-debug-popover.show').length) {
+          if($(e.target).closest('.popover-badge').length) { 
+            $(e.target).closest('.popover-badge').on('shown.bs.popover', function () {
+              $('.clipboard-copy-icon').attr('data-feather', 'clipboard');
+              feather.replace();
+              $('.clipboard-copy').attr('data-clipboard-text', $(document).find('.copy-target, pre').text());
+              new ClipboardJS('.clipboard-copy');
+            });
+            return 
+          }
+          if(!$(e.target).closest('.event-debug-popover.show').length) {{
+              $('.popover-badge').popover('hide');
+            }
+          }
+        }
+      });
+
+      
+  - else
+    .col-md-12
+      .alert.alert-info
+        | No recent history to display
+    

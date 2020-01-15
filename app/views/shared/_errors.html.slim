@@ -1,0 +1,3 @@
+- if c&.errors&.any?
+  .alert.alert-danger
+    = "#{pluralize(c&.errors&.count, 'error')} prevented this #{c&.class&.name&.downcase} from being saved."

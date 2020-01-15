@@ -1,0 +1,3 @@
+module Integration::EmailsHelper
+  
+end

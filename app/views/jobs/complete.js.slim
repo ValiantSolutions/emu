@@ -1,0 +1,12 @@
+| if(typeof $queryTimer !== 'undefined') {window.clearTimeout($queryTimer);}
+| $("#debug-event-placeholder").html('');
+- unless @job&.raw_event_count.zero?
+  | $('#debug-alert').removeClass('alert-warning').addClass('alert-info').text('Debugging with the first 5 events:');
+  | $("#debug-event-result-conditional").html("
+  = j render "#{@alert_type.pluralize.downcase}/conditional", job: @job
+  | ");
+  | $("#debug-event-result-payload").html("
+  = j render "#{@alert_type.pluralize.downcase}/payload", job: @job
+  | ");
+- else
+  | $('#debug-alert').removeClass('alert-info').addClass('alert-warning').text('No Results Found');

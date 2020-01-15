@@ -1,0 +1,12 @@
+
+= fields_for resource_name do |f|
+  = f.hidden_field :otp_secret, value: @otp_secret
+  /.col-md-10
+  .form-group
+    .alert.alert-warning
+      .alert-heading
+        strong
+          | 2FA Required For Login
+      | Scan the barcode below to configure 2-factor authentication.
+    .d-flex.justify-content-center.mg-t-20
+      = raw generate_qrcode(@email, @otp_secret)

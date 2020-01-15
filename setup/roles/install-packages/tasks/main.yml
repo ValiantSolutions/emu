@@ -1,0 +1,25 @@
+---
+- name: copy passenger deb (1/2)
+  copy:
+    src: 'libnginx-mod-http-passenger_6.0.4-1_bionic1_amd64.deb'
+    dest: '/tmp/libnginx-mod-http-passenger_6.0.4-1_bionic1_amd64.deb'
+
+- name: copy passenger deb (2/2)
+  copy:
+    src: 'passenger_6.0.4-1_bionic1_amd64.deb'
+    dest: '/tmp/passenger_6.0.4-1_bionic1_amd64.deb'
+
+- name: install passenger (1/2)
+  apt:
+    deb: '/tmp/passenger_6.0.4-1_bionic1_amd64.deb'
+
+- name: install passenger (2/2)
+  apt:
+    deb: '/tmp/libnginx-mod-http-passenger_6.0.4-1_bionic1_amd64.deb'
+
+- name: install required packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    #allow_unauthenticated: yes
+    update_cache: yes

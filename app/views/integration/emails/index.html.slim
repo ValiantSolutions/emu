@@ -1,0 +1,96 @@
+
+- unless !@emails.nil? && @emails.length > 0
+  .row
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | Hmm...there seems to be nothing here.
+          p.card-text
+            | No e-mail integrations have been created.
+        .card-footer 
+          = link_to :new_integration_email do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  New E-mail Integration
+- else
+  .row.mg-b-15
+    .col-sm-12
+      .d-flex.justify-content-end
+        = link_to :new_integration_email do
+          button.btn.btn-primary[type="button"]
+            i[data-feather="plus"]
+            |  New E-mail Integration
+  .row
+    .col-sm-12
+      .table-responsive-sm
+        table.table.table-hover#email-action-table
+          thead
+            tr
+              th[scope="col"]
+                | Name
+              th[scope="col"]
+                | Host
+              th[scope="col"]
+                | As
+              th[scope="col"]
+                | SSL/TLS
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @emails.each do |email|
+              tr
+                td
+                  span.lh-9
+                    = email.name
+                td
+                  span.lh-9.tx-pink.tx-roboto-mono
+                    = email.host
+                td
+                  span.lh-9.tx-pink.tx-roboto-mono
+                    = email.from
+                td
+                  -  if email.ssl?
+                    - ssl_status = "lock" 
+                    - ssl_color = "success"
+                  - else
+                    - ssl_status = "unlock"
+                    - ssl_color = "danger"
+                  button.btn.btn-icon.btn-xs[class="btn-#{ssl_color}"]
+                    i[data-feather="#{ssl_status}"]
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                      |  
+                    .dropdown-menu.wd-300[aria-labelledby="droprightMenuButton"]
+                      = form_with(model: email, url: integration_email_path(email), local: true) do |form|
+                        .form-group.dropdown-item.mg-b-0.pd-b-10
+                          label.d-block
+                            | Send Test Message: 
+                            span.tx-danger
+                              | *
+                          .input-group
+                            = form.text_field :to, class: "form-control", placeholder: "emu@austraila.com"
+                            .input-group-append
+                              = form.submit "Go", class: 'button-addon2 btn btn-outline-light'
+                      /.dropdown-divider 
+                      = link_to edit_integration_email_path(email), :class => "dropdown-item" do
+                        | Edit
+                      .dropdown-divider 
+                      = link_to integration_email_path(email), data: {\
+                        title: "Delete #{email.name}?",\
+                        confirm: '<h5 class="tx-danger">Are you sure?</h5><p>This action cannot be undone.</p>',\
+                        commit: 'Yes, delete this e-mail integration.', 'cancel-class': 'btn-secondary'},\
+                        :class => "dropdown-item", :method => :delete do
+                          | Delete
+    = javascript_include_tag 'datatable'
+    javascript:
+      $('#email-action-table').DataTable({
+        language: {
+          searchPlaceholder: 'Search...',
+          sSearch: '',
+          lengthMenu: '_MENU_ items/page',
+        },
+      columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+      });
+      $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });

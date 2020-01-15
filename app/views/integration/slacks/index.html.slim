@@ -1,0 +1,76 @@
+
+- unless !@slacks.nil? && @slacks.length > 0
+  .row
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | Hmm...there seems to be nothing here.
+          p.card-text
+            | No Slack integrations have been created.
+        .card-footer 
+          = link_to :new_integration_slack do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  New Slack Integration
+- else
+  .row.mg-b-15
+    .col-sm-12
+      .d-flex.justify-content-end
+        = link_to :new_integration_slack do
+          button.btn.btn-primary[type="button"]
+            i[data-feather="plus"]
+            |  New Slack Integration
+  .row
+    .col-sm-12
+      .table-responsive-sm
+        table.table.table-hover#slack-action-table
+          thead
+            tr
+              th[scope="col"]
+                | Name
+              th[scope="col"]
+                | Channel(s)
+              th[scope="col"]
+                | Status
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @slacks.each do |slack|
+              tr
+                td
+                  span.lh-9
+                    = slack.name
+                td
+                  span.lh-9
+                    = slack.channels.split(',').join(', ')
+                td
+                  button.btn.btn-icon.btn-xs[class="btn-#{endpoint_status_badge_color(slack)}"]
+                    i[data-feather=endpoint_status_icon(slack)]
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                      |  
+                    .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                      = link_to integration_slack_path(slack), :class => "dropdown-item" do
+                        | Send test message
+                      = link_to edit_integration_slack_path(slack), :class => "dropdown-item" do
+                        | Edit
+                      .dropdown-divider 
+                      = link_to integration_slack_path(slack), data: {\
+                        title: "Delete #{slack.name}?",\
+                        confirm: '<h5 class="tx-danger">Are you sure?</h5><p>This action cannot be undone.</p>',\
+                        commit: 'Yes, delete this Slack integration.', 'cancel-class': 'btn-secondary'},\
+                        :class => "dropdown-item", :method => :delete do
+                          | Delete
+    = javascript_include_tag 'datatable'
+    javascript:
+      $('#slack-action-table').DataTable({
+        language: {
+          searchPlaceholder: 'Search...',
+          sSearch: '',
+          lengthMenu: '_MENU_ items/page',
+        },
+      columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+      });
+      $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });

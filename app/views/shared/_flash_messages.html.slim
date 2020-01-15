@@ -1,0 +1,9 @@
+- flash.each do |key, value|
+  .alert.alert-dismissible.fade.show[class=flash_class(key) role="alert"]
+    .alert-heading
+      strong
+        = flash_prefix(key)
+    = value.downcase.humanize
+    button.close[type="button" data-dismiss="alert" aria-label="Close"]
+      span[aria-hidden="true"]
+        | ×

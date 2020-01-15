@@ -1,0 +1,2 @@
+module Integration::TrellosHelper
+end

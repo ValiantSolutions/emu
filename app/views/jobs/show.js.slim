@@ -1,0 +1,11 @@
+
+|   var jobUri = "#{job_path(@job, format: :js)}";
+|   if(typeof $queryTimer !== 'undefined') {window.clearTimeout($queryTimer);}
+|   setTimeout(function() {
+|   $.ajax({
+|     dataType: 'script',
+|     type: 'get',
+|     url: jobUri,
+|     headers: { 'X-CSRF-Token': $('meta[name=csrf-token]').attr('content') }
+|   });
+|   }, 2000);

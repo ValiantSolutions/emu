@@ -1,0 +1,48 @@
+- unless @accounts.count.zero?
+  .row
+    .col-sm-11
+      .table-responsive-sm
+        table.table.table-hover#account-table
+          thead
+            tr
+              th[scope="col"]
+                | E-Mail
+              th[scope="col" class="no-sort"]
+                | Approved?
+              th[scope="col" class="no-sort"]
+                | Locked?
+              th[scope="col"]
+                | As
+              th[scope="col"]
+                | Created
+          tbody
+            - @accounts.each do |u|
+              tr
+                td
+                  = u.email
+                td
+                  = form_for(u, as: :account, url: account_path(u), html: { method: :put }, remote: true) do |form|
+                    .custom-control.custom-switch.pd-l-20
+                      = form.check_box :approved, {class: "custom-control-input", id: "user_#{u.id}_approved"}, "true", "false"
+                      = form.label :approved, "&#8203;".html_safe, class: 'custom-control-label mg-l-25', id: "user_label_#{u.id}_approved", for: "user_#{u.id}_approved"
+                td
+                  = form_for(u, as: :account, url: account_path(u), html: { method: :put }, remote: true) do |form|
+                    .custom-control.custom-switch.pd-l-20
+                      = form.check_box :locked, {class: "custom-control-input", id: "user_#{u.id}_locked"}, "true", "false"
+                      = form.label :locked, "&#8203;".html_safe, class: 'custom-control-label mg-l-25', id: "user_label_#{u.id}_locked", for: "user_#{u.id}_locked"
+                td
+                  = login_provider(u)
+                td
+                  = u.created_at.strftime("%m/%d/%Y %l:%M%P")
+  = render 'datatable'
+  javascript:
+    $("[id^=user_], input[type=checkbox]").on('change', function(e) {
+        var accountForm = $(this).closest('form');
+        accountForm.submit();
+      });
+- else
+  .row
+    .col-md-8
+      .card
+        .card-body
+          | No accounts awaiting approval.

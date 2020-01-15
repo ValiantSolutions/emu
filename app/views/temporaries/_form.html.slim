@@ -1,0 +1,89 @@
+= form_with(model: alert, :url => {:controller => :temporaries, action: :create}) do |form|
+  .form-row.alert.alert-light.pd-b-0
+    = form.fields_for :search do |s|
+      .form-group.col-md-8
+        label.d-block
+          | Query: 
+          span.tx-danger
+            | *
+        .search-form
+          = s.text_field :query, class: "form-control tx-roboto-mono", placeholder: "*"
+          = button_tag(type: "submit", class: "btn bg-white-9") do
+            i[data-feather="search"]
+      
+      .form-group.col-md-4
+        label.d-block
+          | Elasticsearch Cluster: 
+          span.tx-danger
+            | *
+        = s.select(:elastic_endpoint_id, ElasticEndpoint.all.map {|p| [p.name,p.id]}, {}, { :class => "custom-select" })
+  
+  .divider-text.mg-b-20
+    a#schedule-generator-expand.tx-primary[data-toggle="collapse" href="#actionCollapse" role="button" aria-expanded="false" aria-controls="actionCollapse"]
+      | Actions 
+  #actionCollapse.collapse.mg-t-5.show
+    .form-row
+      .col-md-12
+        .alert.bg-secondary.pd-b-5
+          .form-row
+            = form.fields_for :actions do |a|
+              - if a.index == 0
+                - integration_type = 'Slack'
+                - integrations = Integration::Slack.all
+              - elsif a.index == 1
+                - integration_type = 'Trello'
+                - integrations = Integration::Trello.all
+              - elsif a.index == 2
+                - integration_type = 'E-mail'
+                - integrations = Integration::Email.all
+              .form-group.col-md-4.mg-b-5.mg-t-0
+                = a.collection_select(:integratable_gid, integrations, :to_global_id, :name, {:prompt => "Disable #{integration_type}"}, { :class => "custom-select"})
+  = form.fields_for :conditional do |c|
+    .form-row.row-xs
+      .form-group.col-md-4.debug-event-template
+        fieldset.form-fieldset.tx-11.tx-light
+          legend
+            | Conditional Template: 
+          .form-group
+            #debug-event-conditional
+              /| {{ true }}
+            = c.text_area :body, style: "display: none;"
+      .form-group.col-md-8.debug-event-template
+        fieldset.form-fieldset.tx-11.tx-light
+          legend
+            | Payload Template: 
+          .form-group
+            #debug-event-payload
+              / | {% for e in actionable_events %}
+              / |    {% comment %}
+              / |      {% slack %}
+              / |        {{ e.message }}
+              / |     {% endslack %}
+              / |   {% endcomment %}
+              /     {% comment %}
+              /       {% trello title: 'The Card Title', list:'{{ e.status }}' %}
+              /         {{ e.message }}
+              /       {% endtrello %}
+              /     {% endcomment %}
+              /     {% comment %}
+              /       {% email subject: 'Alert!', to:'{{ e.status }}@gmail.com' %}
+              /         {{ e.message }}
+              /       {% endemail %}
+              /     {% endcomment %}
+              /   {% endfor %}
+            = form.fields_for :payload do |p|
+              = p.text_area :body, style: "display: none;"
+  .divider-text.mg-b-20
+    | Result Shown Below
+    i[data-feather="chevrons-down"]
+
+.col-md-12#debug-event-placeholder.col-md-12
+.row
+  .col-md-12
+    .alert#debug-alert
+.row
+  .form-group#debug-event-result-conditional.col-md-6
+  .form-group#debug-event-result-payload.col-md-6
+
+= javascript_include_tag 'ace'
+= javascript_include_tag 'debug-events'

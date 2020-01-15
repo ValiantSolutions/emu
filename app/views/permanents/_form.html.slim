@@ -1,0 +1,116 @@
+
+= form_with(model: alert, local: true, id: 'new-alert-wizard-form') do |form|
+  #new-alert-wizard 
+    h3
+      | Basics
+    section
+      .form-group.row
+        label.col-sm-2.col-form-label
+          | Name: 
+          span.tx-danger
+            | *
+        .col-sm-10
+          = form.text_field :name, class: "form-control", placeholder: "Something to remember the alert by"
+          .tx-danger.tx-12
+            = inline_errors(alert, :name)
+      .form-group.row
+        label.col-sm-2.col-form-label
+          | Search Query: 
+          span.tx-danger
+            | *
+        .col-sm-10
+          = form.select(:search_id, Search.where(permanent: true).map {|p| ["(#{p.name}) #{truncate(p.query,length:135, separator: ' ', omission: ' ...')}",p.id]}, {}, { :class => "custom-select tx-roboto-mono" })
+          .tx-danger.tx-12
+            = inline_errors(alert, :search)
+    h3
+      | Conditional
+    section
+      .alert.alert-info
+        h6.alert-heading
+          | Uses Liquid Template Language  
+          sup
+            a[href="https://shopify.github.io/liquid/basics/introduction/" target="_blank"]
+              i.wd-15.ht-15[data-feather="external-link"]
+        span
+          | This template is evaluated against each result after a search has been run.
+            If it returns true, the event continues to be processed for alerting. 
+          span.tx-inverse
+            |  See right hand column for special variables that can be referenced here.
+      .row
+        .col-md-12
+          - unless inline_errors(alert.conditional, :body).empty?
+            .alert.alert-warning
+              = inline_errors(alert.conditional, :body)
+          .ace-alert-editor#ace-alert-conditional
+          = form.fields_for :conditional do |c|
+            = c.text_area :body, style: "display: none;", autofill: false
+    h3
+      | Duplicate Prevention
+    section
+      .alert.alert-info
+        | To avoid situations where an alert may be fired multiple times for the same logging event, use the options below to generate a unique key. 
+        | Future results will be compared against this key to determine if an alert is actionable.
+      .form-group
+        label.col-form-label.col-sm-2.pt-0
+          | Choose: 
+          span.tx-danger
+            | *
+        .col-sm-10#hash-radio
+          .custom-control.custom-radio
+            = form.radio_button :deduplication, "deduplicate_on_event_id", :class => "custom-control-input", :checked => true
+            = form.label(:deduplication_deduplicate_on_event_id, "Save the unique document ID assigned by Elasticsearch", class: "custom-control-label tx-roboto")
+          .custom-control.custom-radio
+            = form.radio_button :deduplication, "deduplicate_on_event_content", :class => "custom-control-input"
+            = form.label(:deduplication_deduplicate_on_event_content, "Calculate and save a hash of the document contents", class: "custom-control-label tx-roboto")
+          .custom-control.custom-radio
+            = form.radio_button :deduplication, "deduplicate_disabled", :class => "custom-control-input"
+            = form.label(:deduplication_deduplicate_disabled, "Allow duplicate alerts", class: "custom-control-label tx-roboto")
+          .tx-danger.tx-12
+            = inline_errors(alert, :deduplication)
+      .form-group.row#hash-field-taginput[style="display:none;"]
+        label.col-form-label.col-sm-2.pt-0
+          | Event Field(s): 
+          span.tx-danger
+            | *
+        .col-sm-10
+          = form.text_field :deduplication_fields, class: "form-control"
+          .tx-danger.tx-12
+            = inline_errors(alert, :deduplication_fields)
+          .alert.alert-light.mg-t-5
+            small.tx-muted
+              | Tip: Reference nested fields with dot notation. (eg: machine.os)
+
+    h3
+      | Integrations
+    section
+      - unless inline_errors(alert, :actions).empty?
+        .alert.alert-warning
+          = inline_errors(alert, :actions)
+      = render 'integrations', alerert: alert, f: form
+
+    h3
+      | Payload
+    section
+      .alert.alert-info
+        h6.alert-heading
+          | Uses Liquid Template Language  
+          sup
+            a[href="https://shopify.github.io/liquid/basics/introduction/" target="_blank"]
+              i.wd-15.ht-15[data-feather="external-link"]
+          br
+        span.tx-inverse
+          |  See right hand column for special variables & blocks that can be referenced here.
+      .row
+        .col-md-12
+          - unless inline_errors(alert.payload, :body).empty?
+            .alert.alert-warning
+              = inline_errors(alert.payload, :body)
+          .ace-alert-editor#ace-alert-payload
+          = form.fields_for :payload do |p|
+            = p.text_area :body, style: "display: none;", autofill: false
+
+
+= javascript_include_tag 'ace'
+= javascript_include_tag 'form-tags'
+= javascript_include_tag 'steps'
+= javascript_include_tag 'alert'

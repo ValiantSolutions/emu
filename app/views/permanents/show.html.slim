@@ -1,0 +1,112 @@
+- if @alert.nil? || @alert&.jobs&.count&.zero?
+  .row
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | No Job History
+          p.card-text
+            = "#{@alert.name} has no history at this time."
+- else
+  .card
+    .card-body
+      .row
+        .col-sm-12
+          .table-responsive-sm
+            table.table.table-hover#history-table
+              thead
+                tr
+                  th[scope="col"]
+                    | ID
+                  th[scope="col"]
+                    | From
+                  th[scope="col"]
+                    | To
+                  th[scope="col"]
+                    | Total Events
+                  th[scope="col"]
+                    | Actionable
+                  th[scope="col" class="no-sort"]
+                    | Query
+                  th[scope="col" class="no-sort"]
+                    | Outputs
+                  / th[scope="col" class="no-sort"]
+                  /   | Details
+              tbody
+                - @alert&.jobs.each do |j|
+                  tr
+                    td
+                      = j.id
+                    td
+                      = j.from.in_time_zone(@user_tz).strftime("%Y-%m-%d %H:%M:%S %Z")
+                    td
+                      = j.to.in_time_zone(@user_tz).strftime("%Y-%m-%d %H:%M:%S %Z")
+                    td
+                      = j.raw_event_count
+                    td
+                      = j.actionable_event_count
+                    td
+                      - unless j.raw_query.nil?
+                        a.badge.mg-t-5.btn-icon.btn-xs.badge-lighter.tx-sans.tx-12.tx-medium.alert-link.popover-badge[href="javascript://" data-title="Raw Query<a class='btn btn-info btn-icon mg-t-0 btn-xs lh-3 float-right clipboard-copy'><i class='clipboard-copy-icon'></i></a>" data-trigger='manual' data-toggle="popover" data-placement="right" data-content="<pre class='copy-target'>#{JSON.neat_generate(JSON.parse(j.raw_query), padding: 2, aligned: true, sort: true, wrap: true )}</pre>"]
+                          = "View"
+                    td
+                      - unless j.logs.nil? || j.logs.count.zero?
+                        - j.logs.each_with_index do |l, i|
+                          - badge_margin = i.zero? ? 'mg-l-0' : 'mg-l-5'
+                          button.btn.btn-icon.btn-xs.badge-lighter.popover-badge[class="#{badge_margin}" href="javascript://" data-title="#{log_title(l)} <a class='btn btn-info btn-icon mg-t-0 btn-xs lh-3 float-right clipboard-copy'><i class='clipboard-copy-icon'></i></a>" data-trigger='manual' data-toggle="popover" data-placement="left" data-content="<textarea rows='15' cols='70' class='copy-target tx-roboto-mono form-control'>#{l.body}</textarea>"]
+                            i[data-feather=log_icon(l)]
+                    / td
+                    /   - unless j.details.nil?
+                    /     button.btn.btn-icon.btn-xs.badge-warning.popover-badge[href="javascript://" data-title="Details <a class='btn btn-info btn-icon mg-t-0 btn-xs lh-3 float-right clipboard-copy'><i class='clipboard-copy-icon'></i></a>" data-trigger='manual' data-toggle="popover" data-placement="left" data-content="<textarea rows='15' cols='70' class='copy-target tx-roboto-mono form-control'>#{l.details}</textarea>"]
+                    /       i[data-feather='alert-triangle']
+                    /   - else
+                    /     | 
+          
+  = javascript_include_tag 'datatable'
+  = javascript_include_tag 'clipboard.min'   
+
+  javascript:
+    $( document ).ready(function() {
+      $('#history-table').DataTable({
+        order: [[ 0, "desc" ]],
+        language: {
+          searchPlaceholder: 'Search...',
+          sSearch: '',
+          lengthMenu: '_MENU_ items/page',
+        },
+      columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+      });
+      $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+    });
+
+    
+    $('[data-toggle="popover"]').popover({
+      html: true,
+      sanitize: false,
+      template: "<div class='popover popover-header-primary event-debug-popover' role='tooltip'><div class='arrow'></div><h3 class='popover-header'></h3><div class='popover-body'></div></div>",
+    });
+  
+    $('.popover-badge').on('click', function(e) {
+      e.preventDefault();
+      $('.popover-badge').popover('hide');
+      $(this).popover('toggle');
+    });
+
+    $(document).on('click touchstart', function(e){
+      //e.preventDefault();
+      if ($('.event-debug-popover.show').length) {
+        if($(e.target).closest('.popover-badge').length) { 
+          $(e.target).closest('.popover-badge').on('shown.bs.popover', function () {
+            $('.clipboard-copy-icon, i').attr('data-feather', 'clipboard');
+            feather.replace();
+            $('.clipboard-copy').attr('data-clipboard-text', $(document).find('.copy-target, pre').text());
+            new ClipboardJS('.clipboard-copy');
+          });
+          return 
+        }
+        if(!$(e.target).closest('.event-debug-popover.show').length) {{
+            $('.popover-badge').popover('hide');
+          }
+        }
+      }
+    });

@@ -1,0 +1,28 @@
+- if u.admin?
+  li.nav-label.mg-t-25
+    | Administration
+  - params[:controller].include?("account") ? active_class = 'active show' : active_class = nil
+  li.nav-item.with-sub[class="#{active_class}"]
+    a.nav-link[href=""]
+      i[data-feather="user"]
+      span
+        | User Accounts
+    ul
+      li
+        = link_to :accounts do
+          | Manage Users
+      li
+        = link_to :pending_accounts do
+          | Pending Approvals
+  - params[:controller].include?("tasks") ? active_class = 'active show' : active_class = nil
+  li.nav-item[class="#{active_class}"]
+    = link_to :tasks, :class => "nav-link" do
+      i[data-feather="briefcase"]
+      span
+        | Maintenance Jobs
+  - params[:controller].include?("settings") ? active_class = 'active show' : active_class = nil
+  li.nav-item[class="#{active_class}"]
+    = link_to :settings, :class => "nav-link" do
+      i[data-feather="settings"]
+      span
+        | Advanced Settings

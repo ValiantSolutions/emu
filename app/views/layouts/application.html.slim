@@ -1,0 +1,141 @@
+doctype html
+html[lang="en"]
+  head
+    meta[charset="utf-8"]
+    meta[name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"]
+    title
+      | Elasticsearch Management UI
+    = stylesheet_link_tag "application", media: "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+  body
+    .off-canvas#off-canvas.off-canvas-right
+      a.close[href="#"]
+        i[data-feather="x"]
+      #off-canvas-main
+        .pd-25.ht-100p.tx-13
+          h3#off-canvas-title.mg-t-50
+            | Placeholder
+          div#off-canvas-content
+
+    header.navbar.navbar-header.navbar-header-fixed
+      #navbarMenu.navbar-menu-wrapper.row
+          
+    .sidebarMenu.aside.aside-fixed
+      .aside-header.tx-sans
+        a.aside-logo[href="../../index.html"]
+          | emu
+          span
+            | admin
+        a.aside-menu-link[href=""]
+          i[data-feather="menu"]
+          i[data-feather="x"]
+      .aside-body
+        .aside-loggedin
+          .d-flex.align-items-center.justify-content-start
+            a.avatar[href=""]
+              img.rounded-circle[src="#{avatar_url(current_user, 48)}" alt=""]
+            .aside-alert-link
+              = link_to :destroy_user_session, data: { toggle: 'tooltip'}, title: 'Sign out' do
+                i[data-feather="log-out"]
+          .aside-loggedin-user
+            a.d-flex.align-items-center.justify-content-between.mg-b-2[href="#loggedinMenu" data-toggle="collapse"]
+              h6.tx-semibold.mg-b-0
+                = "#{truncate(current_user.email, length: 28)}"
+            p.tx-color-03.tx-12.mg-b-0
+              = humanized_account_role(current_user)
+        ul.nav.nav-aside
+          li.nav-label
+            | Dashboard
+          - params[:controller] == "dashboard" ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :dashboard, :class => "nav-link" do
+              i[data-feather="globe"]
+              span
+                | Overview & Status
+          li.nav-label.mg-t-25
+            | Alerting
+          - (params[:controller] == "permanents" && params[:action] == 'index') ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :permanents, :class => 'nav-link' do
+              i[data-feather="layers"]
+              span
+                | Alert Overview 
+          - (params[:controller] == "permanents" && params[:action] == 'new') ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :new_permanent, :class => 'nav-link' do
+              i[data-feather="bell"]
+              span
+                | Create New Alert
+          li.nav-label.mg-t-25
+            | Scheduling
+          - params[:controller] == "schedules" ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :schedules, :class => 'nav-link' do
+              i[data-feather="calendar"]
+              span
+                | Schedule Management
+          li.nav-label.mg-t-25
+            | Elasticsearch
+          - params[:controller] == "elastic_endpoints" ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :elastic_endpoints, :class => 'nav-link' do
+              i[data-feather="activity"]
+              span
+                | Clusters
+          - params[:controller] == "searches" ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :searches, :class => 'nav-link' do
+              i[data-feather="search"]
+              span
+                | Saved Searches
+          li.nav-label.mg-t-25
+            | Integrations
+          - params[:controller].include?("slacks") ? active_class = 'active show' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :integration_slacks, :class => "nav-link" do
+              i[data-feather="slack"]
+              span
+                | Slack
+          - params[:controller].include?("trellos") ? active_class = 'active show' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :integration_trellos, :class => "nav-link" do
+              i[data-feather="trello"]
+              span
+                | Trello
+          - params[:controller].include?("emails") ? active_class = 'active show' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :integration_emails, :class => "nav-link" do
+              i[data-feather="mail"]
+              span
+                | E-mail
+          
+          li.nav-label.mg-t-25
+            | Tools
+          - (params[:controller] == "temporaries") ? active_class = 'active' : active_class = nil
+          li.nav-item[class="#{active_class}"]
+            = link_to :temporaries, :class => "nav-link" do
+              i[data-feather="eye"]
+              span
+                | Event Debugger
+          = render 'shared/menu_admin', u: current_user
+
+
+            
+    .content.content-components.mg-t-60
+      = render 'shared/notice'
+      .container.pd-x-0
+        h1.df-title
+          - breadcrumb_trail.each_with_index do |crumb, i|
+            - if (i + 1) == breadcrumb_trail.count
+              = crumb.name
+        .d-sm-flex.align-items-center.justify-content-between.mg-b-20.mg-lg-b-25.mg-xl-b-30
+          div
+            nav[aria-label="breadcrumb"]
+              ol.breadcrumb.breadcrumb-style1.mg-b-10
+                - breadcrumb_trail do |crumb|
+                  - class_active = crumb.current? ? 'active' : ''
+                  li.breadcrumb-item[class="#{class_active}"]
+                    = link_to_unless crumb.current? || crumb.url.blank?, crumb.name, crumb.url, (crumb.current? ? {'aria-current' => 'page'} : {})
+        = yield
+    

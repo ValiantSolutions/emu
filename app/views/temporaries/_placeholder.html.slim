@@ -1,0 +1,18 @@
+.placeholder-paragraph
+  br
+  .line
+  .line
+
+javascript:
+  if(typeof $queryTimer !== 'undefined') {window.clearTimeout($queryTimer);}
+  var getJobStatus = function() {
+    var jobUri = "#{job_path(job, format: :js)}";
+    $.ajax({
+      dataType: 'script',
+      type: 'get',
+      url: jobUri,
+      headers: { 'X-CSRF-Token': $('meta[name=csrf-token]').attr('content') }
+    });
+  }
+
+  getJobStatus();

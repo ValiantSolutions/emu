@@ -1,0 +1,77 @@
+- unless @accounts.nil? || @accounts.count.zero?
+  .row
+    .col-sm-11
+      - unless  @accounts&.where&.not(locked_at: nil)&.count&.zero?
+        .alert.alert-warning
+          .alert-heading
+            strong
+              | Pending or Locked Accounts Present
+          | There are 
+          = link_to :pending_accounts do
+            | one or more accounts 
+          | that may need attention. 
+      .table-responsive-sm
+        table.table.table-hover#account-table
+          thead
+            tr
+              th[scope="col"]
+                | E-Mail
+              th[scope="col" class="no-sort"]
+                | Flags
+              th[scope="col"]
+                | As
+              th[scope="col"]
+                | Created
+              th[scope="col"]
+                | Last Login
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @accounts.each do |u|
+              tr
+                td
+                  = u.email
+                td
+                  .btn-toolbar[role="toolbar" aria-label="Toolbar with button groups"]
+                    .btn-group[role="group" aria-label="Account Flags"]
+                      - badge_color = locked_class(u)
+                      button.btn.btn-icon.badge[class="#{badge_color}" data-placement="top" data-toggle="tooltip" title=locked_tooltip(u)]
+                        i[data-feather=locked_icon(u)]
+                      - badge_color = approval_class(u)
+                      button.btn.btn-icon.badge[class="#{badge_color}" data-placement="top" data-toggle="tooltip" title=approval_tooltip(u)]
+                        i[data-feather=approval_icon(u)]
+                      - badge_color = admin_class(u)
+                      button.btn.btn-icon.badge[class="#{badge_color}" data-placement="top" data-toggle="tooltip" title=admin_tooltip(u)]
+                        i[data-feather=admin_icon(u)]
+                  
+                td
+                  = login_provider(u)
+                td
+                  = u&.created_at.strftime("%m/%d/%Y")
+                td
+                  - if u&.last_sign_in_at.nil?
+                    | Never
+                  - else
+                    = u&.last_sign_in_at.strftime("%m/%d/%Y")
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                    .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                      - approval_text = u.approved? ? 'Disable login' : 'Approve account'
+                      = link_to account_path(u), :class => "dropdown-item" do
+                        = approval_text
+                      .dropdown-divider 
+                      = link_to account_path(u), data: {\
+                        title: "Delete Account?",\
+                        confirm: "<h5 class='tx-danger'><p>Confirm account deletion for #{u.email}.</p></h5><p>This action cannot be undone.</p>",\
+                        commit: 'Yes, delete this user.', 'cancel-class': 'btn-secondary'},\
+                        :class => "dropdown-item", :method => :delete do
+                          | Delete
+  = render 'datatable'
+
+- else
+  .row
+    .col-md-8
+      .card
+        .card-body
+          | No accounts to show.

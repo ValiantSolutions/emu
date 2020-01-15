@@ -1,0 +1,12 @@
+= javascript_include_tag 'datatable'
+    
+javascript:
+  $('#account-table').DataTable({
+    language: {
+      searchPlaceholder: 'Search...',
+      sSearch: '',
+      lengthMenu: '_MENU_ items/page',
+    },
+  columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+  });
+  $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });

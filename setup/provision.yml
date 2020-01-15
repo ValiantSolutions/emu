@@ -1,0 +1,35 @@
+---
+- hosts: all
+  vars:
+    ansible_user: ubuntu
+  become: yes
+  gather_facts: false
+  
+  pre_tasks:
+    - name: install python 2
+      raw: sudo bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)"
+
+- hosts: all
+  vars:
+    ansible_user: ubuntu
+    # below are emu environment variables:
+    app_path: '/emu'
+    emu_repo: 'https://github.com/ValiantSolutions/emu.git'
+    emu_env: 'production'
+    server_name: 'your-emu-install.fqdn.com'
+    rails_master_key: '<see install guide for details>'
+    database_name: 'emu_prod'
+    database_username: '<username>'
+    database_password: '<password>'
+    database_host: 'localhost'
+    database_port: '3306'
+    google_oauth_client: '(optional) <client string>'
+    google_oauth_secret: '(optional) <secret>'
+    redis_connection: 'redis://localhost:6379/0'
+  become: yes
+
+  roles:
+    - install-packages
+    - ansible-role-ruby
+    - ansible-role-mysql
+    - post-install

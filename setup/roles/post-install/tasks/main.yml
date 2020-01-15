@@ -1,0 +1,126 @@
+---
+- include_vars: 'env.yml.vault'
+
+- name: enable redis server on startup
+  service:
+    name: 'redis-server'
+    enabled: yes
+    state: started
+
+- name: enable mysql service on startup
+  service:
+    name: 'mysql'
+    enabled: yes
+    state: started
+
+- name: create emu user
+  user:
+    name: emu
+    create_home: yes
+    generate_ssh_key: yes
+    shell: '/bin/bash'
+
+- name: clone emu repo
+  git:
+    repo: "{{ emu_repo }}"
+    dest: "{{ app_path }}"
+    accept_hostkey: yes
+    #key_file: '/home/emu/.ssh/emu.deploy.key'
+    force: yes
+
+- name: transfer app ownership to emu
+  file:
+    path: "{{ app_path }}"
+    state: directory
+    recurse: yes
+    owner: 'emu'
+    group: 'emu'
+  
+- name: install required gems
+  bundler:
+    state: present
+    chdir: "{{ app_path }}"
+    deployment_mode: yes
+    exclude_groups: 
+      - 'development'
+      - 'test'
+  become: yes
+  become_user: 'emu'
+
+- name: create master key
+  template:
+    src: 'master.key.j2'
+    dest: "{{ app_path }}/config/master.key"
+    owner: 'emu'
+    group: 'emu'
+    mode: 0600
+
+- name: lock down sensitive directories
+  file:
+    path: "{{ item }}"
+    mode: 0700
+  loop:
+    - "{{ app_path}}/config"
+    - "{{ app_path}}/db"
+
+- name: set permissions on binstubs
+  file:
+    path: "{{ app_path }}/bin"
+    state: directory
+    recurse: yes
+    owner: 'emu'
+    group: 'emu'
+    mode: 0755
+
+- name: setup environment secrets
+  template:
+    src: 'dotenv.j2'
+    dest: "{{ app_path}}/.env"
+    owner: 'emu'
+    group: 'emu'
+
+- name: template out sidekiq service file
+  template:
+    src: 'sidekiq.service.j2'
+    dest: '/lib/systemd/system/sidekiq.service'
+
+- name: precompile assets
+  shell: 'RAILS_ENV=production bin/rails assets:precompile db:migrate'
+  args:
+    chdir: "{{ app_path }}"
+  become: yes
+  become_user: 'emu'
+
+- name: setup nginx with passenger
+  file:
+    src: '/usr/share/nginx/modules-available/mod-http-passenger.load'
+    dest: '/etc/nginx/modules-enabled/50-mod-http-passenger.conf'
+    state: link
+
+- name: copy nginx config
+  template:
+    src: 'nginx.conf.j2'
+    dest: '/etc/nginx/nginx.conf'
+
+- name: remove default site
+  file:
+    path: '/etc/nginx/sites-enabled/default'
+    state: absent
+
+- name: template emu nginx config
+  template:
+    src: 'emu.j2'
+    dest: '/etc/nginx/sites-enabled/emu'
+  notify: reload nginx
+
+- name: enable sidekiq service on startup
+  service:
+    name: 'sidekiq'
+    enabled: yes
+    state: started
+
+- name: enable nginx service on startup
+  service:
+    name: 'nginx'
+    enabled: yes
+    state: stopped

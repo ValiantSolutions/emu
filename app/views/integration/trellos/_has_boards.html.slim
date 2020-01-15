@@ -1,0 +1,9 @@
+- unless @trello.board_list.nil?
+  .divider-text.mg-b-20
+    | Select A Board
+    i[data-feather="chevrons-down"]
+  = fields_for @trello do |f|
+    .form-row
+      .form-group.col-md-12
+        = f.select(:board_id, @trello&.board_list, {}, { :class => "custom-select tx-roboto-mono" })
+    = f.submit "Save Trello integration", class: "btn btn-primary"

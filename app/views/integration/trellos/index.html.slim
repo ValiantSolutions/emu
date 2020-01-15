@@ -1,0 +1,75 @@
+- unless !@trellos.nil? && @trellos.length > 0
+  .row
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | Hmm...there seems to be nothing here.
+          p.card-text
+            | No Trello integrations have been created.
+        .card-footer 
+          = link_to :new_integration_trello do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  New Trello Integration
+- else
+  .row.mg-b-15
+    .col-sm-12
+      .d-flex.justify-content-end
+        = link_to :new_integration_trello do
+          button.btn.btn-primary[type="button"]
+            i[data-feather="plus"]
+            |  New Trello Integration
+  .row
+    .col-sm-12
+      .table-responsive-sm
+        table.table.table-hover#trello-action-table
+          thead
+            tr
+              th[scope="col"]
+                | Name
+              th[scope="col"]
+                | Board Name
+              th[scope="col"]
+                | Board ID
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @trellos.each do |trello|
+              tr
+                td
+                  span.lh-9
+                    = trello.name
+                td
+                  span.lh-9
+                    = trello.board_name
+                td
+                  span.lh-9.tx-roboto-mono.tx-pink
+                    = trello.board_id
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                      |  
+                    .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                      = link_to integration_trello_path(trello), :class => "dropdown-item" do
+                        | Create test card
+                      = link_to edit_integration_trello_path(trello), :class => "dropdown-item" do
+                        | Edit
+                      .dropdown-divider 
+                      = link_to integration_trello_path(trello), data: {\
+                        title: "Delete #{trello.name}?",\
+                        confirm: '<h5 class="tx-danger">Are you sure?</h5><p>This action cannot be undone.</p>',\
+                        commit: 'Yes, delete this Trello integration.', 'cancel-class': 'btn-secondary'},\
+                        :class => "dropdown-item", :method => :delete do
+                          | Delete
+    = javascript_include_tag 'datatable'
+    javascript:
+      $('#trello-action-table').DataTable({
+        language: {
+          searchPlaceholder: 'Search...',
+          sSearch: '',
+          lengthMenu: '_MENU_ items/page',
+        },
+      columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+      });
+      $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });

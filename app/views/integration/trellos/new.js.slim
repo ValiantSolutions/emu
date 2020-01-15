@@ -1,0 +1,7 @@
+| $("#trello-boards").html("
+= j render @trello.submit_step, object: @trello, as: 'trello'
+| ");
+- if @trello.errors.any?
+| $("#form-errors").html("
+= j render 'errors', trello: @trello
+| ");

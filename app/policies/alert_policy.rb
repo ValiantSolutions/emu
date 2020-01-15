@@ -1,0 +1,3 @@
+class AlertPolicy < AllowAllPolicy
+  
+end

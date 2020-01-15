@@ -1,0 +1,96 @@
+
+.row.mg-b-15
+  .col-sm-12
+    .d-flex.justify-content-end
+      = link_to :new_schedule do
+        button.btn.btn-primary[type="button"]
+          i[data-feather="plus"]
+          |  New Schedule
+.row
+  .col-sm-12
+    .table-responsive-sm
+      table.table#schedule-table
+        thead
+          tr
+            th[scope="col" class="no-sort enabled-column"]
+              | Enable?
+            th[scope="col"]
+              | Alert
+            th[scope="col"]
+              | Cron 
+            th[scope="col"]
+              | Range
+            th[scope="col"]
+              | Last Run
+            th[scope="col"]
+              | Next Run
+            th[scope="col" class="no-sort action-column"]
+        tbody
+          - @schedules.each do |schedule|
+            tr
+              td
+                = form_for(schedule, remote: true) do |form|
+                  .custom-control.custom-switch.pd-l-20
+                    = form.check_box :enabled, {class: "custom-control-input", id: "schedule_#{schedule.id}_enabled"}, "true", "false"
+                    = form.label :enabled, "&#8203;".html_safe, class: 'custom-control-label mg-l-25', id: "schedule_label_#{schedule.id}_enabled", for: "schedule_#{schedule.id}_enabled"
+                    /label.custom-control-label[for="schedule_enabled"]
+              td
+                = schedule.alert.name
+              td.tx-roboto-mono.tx-pink
+                = schedule.cron
+              td
+                = "#{pluralize(schedule.range, schedule.period)}"
+              td
+                - last_job = schedule&.jobs&.last
+                - unless last_job.nil?
+                  = schedule.last.in_time_zone(@user_tz).strftime("%m/%d/%Y @ %I:%M:%S%p")
+                - else
+                  | Never
+              td
+                - if schedule&.enabled?
+                  = schedule.next.in_time_zone(@user_tz).strftime("%m/%d/%Y @ %I:%M:%S%p")
+                - else
+                  | -
+
+              td
+                .dropdown.dropright
+                  button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                    i[data-feather="settings"]
+                  .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                    /= link_to schedule_path(schedule), :class => "dropdown-item" do
+                    = link_to trigger_schedules_path(schedule), data: {\
+                      title: "Force Run #{schedule.alert.name}?",\
+                      confirm: '<h5 class="tx-dark">Any actions will be triggered just as if this was a scheduled run.</h5><p>Are you sure?</p>',\
+                      commit: 'Yes, run this schedule.', 'cancel-class': 'btn-secondary', 'commit-class': 'btn-success'},\
+                      :class => "dropdown-item", :method => :put, remote: true do
+                        | Execute now
+                    = link_to permanent_path(schedule.alert), class: "dropdown-item" do
+                      | History
+                    = link_to edit_schedule_path(schedule), :class => "dropdown-item" do
+                      | Edit
+                    .dropdown-divider 
+                    = link_to schedule_path(schedule), data: {\
+                      title: "Delete Schedule?",\
+                      confirm: "<h5 class='tx-danger'><p>Confirm deletion for schedule: #{schedule.alert.name} (#{schedule.cron})</p></h5><p>This action cannot be undone.</p>",\
+                      commit: 'Yes, delete this schedule.', 'cancel-class': 'btn-secondary'},\
+                      :class => "dropdown-item", :method => :delete do
+                        | Delete
+    = javascript_include_tag 'datatable'
+    
+    javascript:
+
+      $('#schedule-table').DataTable({
+        language: {
+          searchPlaceholder: 'Search...',
+          sSearch: '',
+          lengthMenu: '_MENU_ items/page'
+        },
+        order: [[ 1, "desc" ]],
+        columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}, { targets: 'enabled-column', width: "50px"}]
+      });
+      $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+
+      $("[id^=schedule_], input[type=checkbox]").on('change', function(e) {
+        var scheduleForm = $(this).closest('form');
+        scheduleForm.submit();
+      });

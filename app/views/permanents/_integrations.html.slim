@@ -1,0 +1,17 @@
+= f.fields_for :actions do |a|
+  - if a.index == 0
+    - integration = @slacks
+    - name = 'Slack'
+  - elsif a.index == 1
+    - integration = @trellos
+    - name = 'Trello'
+  - elsif a.index == 2
+    - integration = @emails
+    - name = 'E-mail'
+  /- next if integration.coun
+  .form-group.row
+    label.col-form-label.col-sm-2.pt-0
+      = name
+    .col-sm-6
+      = a.hidden_field :enabled, value: true
+      = a.collection_select(:integratable_gid, integration, :to_global_id, :name, {include_blank: "Disable #{name}"}, { class: "custom-select"})

@@ -1,0 +1,45 @@
+.alert.alert-info
+  strong
+    | Quick tip: 
+  | You can generate and view Slack tokens 
+  a[href="https://api.slack.com/custom-integrations/legacy-tokens" target="_blank"]
+    | here
+  | .
+
+= form_with(model: slack, local: true) do |form|
+  .form-row
+    .form-group.col-md-6
+      label.d-block
+        | Name: 
+        span.tx-danger
+          | *
+      = form.text_field :name, class: "form-control", placeholder: "My Awesome Slack"
+      .tx-danger.tx-12
+        = inline_errors(slack, :name)
+    .form-group.col-md-6
+      label.d-block
+        | Channel(s): 
+        span.tx-danger
+          | *
+      = form.text_field :channels, class: "form-control", autofill: false
+      .tx-danger.tx-12
+        = inline_errors(slack, :channels)
+  .form-row
+    .form-group.col-md-12
+      label.d-block
+        | Secret Token: 
+        span.tx-danger
+          | *
+      = form.password_field :secret, class: "form-control"
+      .tx-danger.tx-12
+        = inline_errors(slack, :secret)
+  hr
+  = form.submit "Save Slack Integration", class: "btn btn-primary"
+
+  = javascript_include_tag 'form-tags'
+
+  javascript:
+    var tagTextbox = $('#integration_slack_channels').tagsinput({
+      confirmKeys: [13, 44, 32],
+      trimValue: true
+    });

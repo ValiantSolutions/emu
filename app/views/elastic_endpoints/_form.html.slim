@@ -1,0 +1,67 @@
+
+= form_with(model: elastic_endpoint, local: true) do |form|
+  .form-group
+    label.d-block
+      | Name: 
+      span.tx-danger
+        | *
+    = form.text_field :name, class: "form-control", placeholder: "My Elasticsearch cluster!"
+    .tx-danger.tx-12
+      = inline_errors(elastic_endpoint, :name)
+  .form-row
+    .form-group.col-md-2
+      label.d-block
+        | Protocol: 
+        span.tx-danger
+          | *
+
+      = form.select(:protocol, ElasticEndpoint.protocols.keys.map {|p| [p,p]}, {}, { :class => "custom-select" })
+      
+      .tx-danger.tx-12.text-nowrap
+        = inline_errors(elastic_endpoint, :protocol)
+        = inline_errors(elastic_endpoint, :address)
+        = inline_errors(elastic_endpoint, :port)
+    .form-group.col-md-8
+      label.d-block
+        | Address: 
+        span.tx-danger
+          | *
+      = form.text_field :address, class: "form-control", placeholder: "eg: my.cluster.com"
+        
+    .form-group.col-md-2
+      label.d-block
+        | Port: 
+        span.tx-danger
+          | *
+      = form.text_field :port, class: "form-control", placeholder: "9200"
+      
+  .form-row
+    .form-group.col-md-12
+      .custom-control.custom-switch
+        = form.check_box :verify_ssl, class: "custom-control-input"
+        = form.label(:verify_ssl, "Enable SSL Validation", class: "custom-control-label")
+        .tx-danger.tx-12
+          = inline_errors(elastic_endpoint, :verify_ssl)
+  hr
+  .accordion#accordion
+    .h6
+      | Authentication
+    div
+      .form-row
+        .form-group.col-md-6
+          label.d-block
+            | Username: 
+          = form.text_field :username, id: :username, class: "form-control"
+
+        .form-group.col-md-6
+          label.d-block
+            | Password:
+          = form.password_field :password, id: :password, class: "form-control"
+  hr
+  = form.submit "Save endpoint", class: "btn btn-primary"
+
+script
+  - unless elastic_endpoint.username.blank? && elastic_endpoint.password.blank?
+    | $('#accordion').accordion({heightStyle: 'content', collapsible: true});
+  - else
+    | $('#accordion').accordion({active: false, heightStyle: 'content', collapsible: true});

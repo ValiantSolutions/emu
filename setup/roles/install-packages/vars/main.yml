@@ -1,0 +1,22 @@
+packages:
+  - apt-transport-https
+  - nodejs 
+  - nano 
+  - git 
+  - python-pip
+  - mysql-client
+  - ruby-dev
+  - build-essential 
+  - dh-autoreconf 
+  - libffi-dev 
+  - libmagic-dev
+  - libmysqlclient-dev
+  - libpq-dev
+  - python-psycopg2
+  - redis-server
+  - python-dev
+  - python-setuptools
+  - openjdk-8-jre-headless
+  - nginx-extras 
+  - libnginx-mod-http-passenger
+  - ca-certificates

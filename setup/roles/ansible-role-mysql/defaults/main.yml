@@ -1,0 +1,163 @@
+---
+# Set this to the user ansible is logging in as - should have root
+# or sudo access
+mysql_user_home: /root
+mysql_user_name: root
+mysql_user_password: root
+
+# The default root user installed by mysql - almost always root
+mysql_root_home: /root
+mysql_root_username: root
+mysql_root_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          34653363666362356636633030666630303139346264656439346135343338306233346639343933
+          6538656536623031613632383537313935383163353630380a633530313263626332306162383863
+          63346138306262393836386631663235633433623832336261336261316138653836356231313966
+          6561343464306636630a373139646664356264663061656635383466333664366161636337636138
+          61626631313434356634333037303164323839333839316336376432303962336532
+
+# Set this to `true` to forcibly update the root password.
+mysql_root_password_update: true
+mysql_user_password_update: false
+
+mysql_enabled_on_startup: true
+
+# Whether my.cnf should be updated on every run.
+overwrite_global_mycnf: true
+
+# The following variables have a default value depending on operating system.
+# mysql_config_file: /etc/my.cnf
+# mysql_config_include_dir: /etc/my.cnf.d
+
+# Pass in a comma-separated list of repos to use (e.g. "remi,epel"). Used only
+# for RedHat systems (and derivatives).
+mysql_enablerepo: ""
+
+# Define a custom list of packages to install; if none provided, the default
+# package list from vars/[OS-family].yml will be used.
+# mysql_packages:
+#   - mysql
+#   - mysql-server
+#   - MySQL-python
+
+# MySQL connection settings.
+mysql_port: "3306"
+mysql_bind_address: '0.0.0.0'
+mysql_skip_name_resolve: false
+mysql_datadir: /var/lib/mysql
+mysql_sql_mode: ''
+# The following variables have a default value depending on operating system.
+# mysql_pid_file: /var/run/mysqld/mysqld.pid
+# mysql_socket: /var/lib/mysql/mysql.sock
+
+# Log file settings.
+mysql_log_file_group: mysql
+
+# Slow query log settings.
+mysql_slow_query_log_enabled: false
+mysql_slow_query_time: "2"
+# The following variable has a default value depending on operating system.
+# mysql_slow_query_log_file: /var/log/mysql-slow.log
+
+# Memory settings (default values optimized ~512MB RAM).
+mysql_key_buffer_size: "256M"
+mysql_max_allowed_packet: "64M"
+mysql_table_open_cache: "256"
+mysql_sort_buffer_size: "1M"
+mysql_read_buffer_size: "1M"
+mysql_read_rnd_buffer_size: "4M"
+mysql_myisam_sort_buffer_size: "64M"
+mysql_thread_cache_size: "8"
+mysql_query_cache_type: "0"
+mysql_query_cache_size: "16M"
+mysql_query_cache_limit: "1M"
+mysql_max_connections: "151"
+mysql_tmp_table_size: "16M"
+mysql_max_heap_table_size: "16M"
+mysql_group_concat_max_len: "1024"
+mysql_join_buffer_size: "262144"
+
+# Other settings.
+mysql_lower_case_table_names: "0"
+mysql_wait_timeout: "28800"
+mysql_event_scheduler_state: "OFF"
+
+# InnoDB settings.
+mysql_innodb_file_per_table: "1"
+# Set .._buffer_pool_size up to 80% of RAM but beware of setting too high.
+mysql_innodb_buffer_pool_size: "256M"
+# Set .._log_file_size to 25% of buffer pool size.
+mysql_innodb_log_file_size: "64M"
+mysql_innodb_log_buffer_size: "8M"
+mysql_innodb_flush_log_at_trx_commit: "1"
+mysql_innodb_lock_wait_timeout: "50"
+
+# These settings require MySQL > 5.5.
+mysql_innodb_large_prefix: "1"
+mysql_innodb_file_format: "barracuda"
+
+# mysqldump settings.
+mysql_mysqldump_max_allowed_packet: "64M"
+
+# Logging settings.
+mysql_log: ""
+# The following variables have a default value depending on operating system.
+# mysql_log_error: /var/log/mysql/mysql.err
+# mysql_syslog_tag: mysql
+
+mysql_config_include_files: []
+#  - src: path/relative/to/playbook/file.cnf
+#  - { src: path/relative/to/playbook/anotherfile.cnf, force: yes }
+
+# Databases.
+mysql_databases: 
+  - name: emu_dev
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+
+  - name: emu_test
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+
+  - name: emu_prod
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+
+# Users.
+mysql_users:
+  # - name: emu_dev
+  #   host: '%'
+  #   password: emu_dev
+  #   priv: emu_dev.*:ALL,GRANT
+
+  # - name: emu_test
+  #   host: '%'
+  #   password: emu_test
+  #   priv: emu_test.*:ALL,GRANT
+
+  - name: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          34326635336331386265306666343366323335376362326565613937626266643835663262643261
+          3936396231666136366361613431613233633061616563380a613230343230643137343164383533
+          64323232376165346663383062613966623937373335633966303364663434303432383962383537
+          3033346433363733660a323363376661336436313062383763386336636362623561303661623339
+          35373237643036613864303238646535353430356337626265303430646534626230
+    host: '%'
+    password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          65343430623061336265373961663635313666373765666239626535393433633238363034393133
+          6437333036323935313437373031313533663361633831610a303163666431666266353361366331
+          32663432633536333061336361623062626631613133323730356130313263653730663933663936
+          6664343963303961300a616265616631316138636165666462393936666331623665663563343064
+          63303566326665363762646536356535643939636565383866303062653134396165
+    priv: emu_prod.*:ALL,GRANT
+
+# Replication settings (replication is only enabled if master/user have values).
+mysql_server_id: "1"
+mysql_max_binlog_size: "100M"
+mysql_binlog_format: "ROW"
+mysql_expire_logs_days: "10"
+mysql_replication_role: ''
+mysql_replication_master: ''
+# Same keys as `mysql_users` above.
+mysql_replication_user: []

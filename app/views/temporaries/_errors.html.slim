@@ -1,0 +1,14 @@
+- debug_errors = ""
+- temporary.errors.messages.each do |e,m|
+  - debug_errors = "#{debug_errors}<li>#{m.first}</li>"
+
+/- puts debug_errors
+
+javascript:
+  $("#toast-title").html("Oops!");
+  $("#toast-body").html("#{pluralize(temporary.errors.count, 'error')} need to be addressed before debugging this event.<br/><ul>#{debug_errors.html_safe}</ul>")
+  $("#off-canvas").removeClass('show');
+  $(".toast").toast('show').delay(300).effect('shake');
+  $('.toast').on('hidden.bs.toast', function () {
+    $("#off-canvas").addClass('show');
+  });

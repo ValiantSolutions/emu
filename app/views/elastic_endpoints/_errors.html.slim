@@ -1,0 +1,3 @@
+- if elastic_endpoint.errors.any?
+  .alert.alert-danger
+    = "#{pluralize(elastic_endpoint.errors.count, 'error')} prevented this cluster from being saved."

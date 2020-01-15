@@ -1,0 +1,4 @@
+| $("#dashboard-jumbotron").html("
+= j render 'jumbotron'
+| ");
+| $("#jumbotron-alertable-event-count").text("#{human_readable_num(@stats[:events][:actionable_event_count])}");

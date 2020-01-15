@@ -1,0 +1,124 @@
+.row.row-sm
+  .col-sm-6.col-lg-3
+    .card.card-body
+      h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-8
+        | Failed Jobs
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.tx-sans.tx-uppercase.tx-9.tx-medium.tx-color-03
+              | Last 7 Days
+      .d-flex.d-lg-block.d-xl-flex.align-items-end
+        h3.tx-normal.tx-rubik.mg-b-0.mg-r-5.lh-1
+          = human_readable_num(@stats[:jobs][:failed][:current])
+        p.tx-12.tx-color-03.mg-b-0
+          /- pct = calc_pct_arrow(@stats[:jobs][:failed], true)
+          /- unless pct.nil? || pct[:value].nan?
+            span.tx-medium[class="tx-#{pct[:color]}"]
+              = pct[:value]
+              | % 
+              i.icon[class="ion-md-arrow-#{pct[:arrow]}"]
+      .ht-30.text-muted.pd-t-15.tx-sans.tx-uppercase.tx-9.tx-spacing-1.tx-semibold
+        a[href="#"]
+          | View Job History
+        
+  .col-sm-6.col-lg-3.mg-t-10.mg-sm-t-0
+    .card.card-body
+      h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-8
+        | Duplicates Prevented
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.tx-sans.tx-uppercase.tx-9.tx-medium.tx-color-03
+              | All-Time
+      .d-flex.d-lg-block.d-xl-flex.align-items-end
+        h3.tx-normal.tx-rubik.mg-b-0.mg-r-5.lh-1
+          = human_readable_num(@stats[:events][:guards][:duplicates_prevented])
+        p.tx-12.tx-color-03.mg-b-0
+          /- pct = calc_pct_arrow(@stats[:events][:guards])
+          /- unless pct.nil? || pct[:value].nan?
+            span.tx-medium[class="tx-#{pct[:color]}"]
+              = pct[:value]
+              | % 
+              i.icon[class="ion-md-arrow-#{pct[:arrow]}"]
+      #flot-duplicates-supressed.flot-chart.ht-30
+  .col-sm-6.col-lg-3.mg-t-10.mg-lg-t-0
+    .card.card-body
+      h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-8
+        | Search Latency
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.tx-sans.tx-uppercase.tx-9.tx-medium.tx-color-03
+              | Last 24 Hours
+      .d-flex.d-lg-block.d-xl-flex.align-items-end
+        - if @stats[:jobs][:latency][:current].nan?
+          h3.tx-normal.tx-rubik.mg-b-0.lh-1
+            | -
+        - else
+          h3.tx-normal.tx-rubik.mg-b-0.lh-1
+            = @stats[:jobs][:latency][:current]
+          h4.tx-normal.tx-rubik.mg-b-0.mg-r-5.lh-2
+            | sec
+        p.tx-12.tx-color-03.mg-b-0
+          /- pct = calc_pct_arrow(@stats[:jobs][:latency], true)
+          /- unless pct.nil? || pct[:value].nan?
+            span.tx-medium[class="tx-#{pct[:color]}"]
+              = pct[:value]
+              | % 
+              /i.icon[class="ion-md-arrow-#{pct[:arrow]}"]
+      #flot-job-latency.flot-chart.ht-30
+  .col-sm-6.col-lg-3.mg-t-10.mg-lg-t-0
+    .card.card-body
+      h6.tx-uppercase.tx-12.tx-spacing-1.tx-color-02.tx-semibold.mg-b-8
+        | Events Processed
+        ul.list-inline.d-flex.mg-t-20.mg-sm-t-10.mg-md-t-0.mg-b-0
+          li.list-inline-item.d-flex.align-items-center
+            span.tx-sans.tx-uppercase.tx-9.tx-medium.tx-color-03
+              | Last 24 Hours
+      .d-flex.d-lg-block.d-xl-flex.align-items-end
+        h3.tx-normal.tx-rubik.mg-b-0.mg-r-5.lh-1
+          = human_readable_num(@stats[:events][:all_searched][:current])
+        p.tx-12.tx-color-03.mg-b-0
+          /- pct = calc_pct_arrow(@stats[:events][:all_searched])
+          /- unless pct.nil?
+            span.tx-medium
+              = pct[:value]
+              | % 
+              i.icon[class="ion-md-arrow-#{pct[:arrow]}"]
+        
+      #flot-lifetime-documents.flot-chart.ht-30
+
+javascript:
+  var lifetimeDocuments = "#{@stats[:charts][:all_events]}";
+  var jobLatency = "#{@stats[:charts][:job_latency]}";
+  var duplicatesSupressed = "#{@stats[:charts][:guards]}";
+
+  function plotStats(selector, dataArray) {
+    $.plot(selector, [{
+        data: JSON.parse(dataArray),
+        color: '#9db2c6'
+      }], {
+      series: {
+        shadowSize: 0,
+        lines: {
+          show: true,
+          lineWidth: 2,
+          fill: true,
+          fillColor: { colors: [ { opacity: 0 }, { opacity: .5 } ] }
+        }
+      },
+      grid: {
+        borderWidth: 0,
+        labelMargin: 0
+      },
+      yaxis: {
+        show: false,
+        min: 0,
+        max: Number("#{calc_max_for_flot_array(@stats[:charts][:all_events])}")
+      },
+      xaxis: { show: false }
+    });
+  }
+
+  plotStats('#flot-lifetime-documents', lifetimeDocuments);
+  plotStats('#flot-job-latency', jobLatency);
+  plotStats('#flot-duplicates-supressed', duplicatesSupressed);
+  //plotStats('#flot-lifetime-documents', lifetimeDocuments);

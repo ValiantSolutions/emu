@@ -1,0 +1,83 @@
+.alert.alert-info
+  strong
+    | Quick tip: 
+  | You can generate and view Trello API keys 
+  a[href="https://trello.com/app-key" target="_blank"]
+    | here
+  | .
+#form-errors
+
+= form_with(model: trello) do |form|
+  = form.hidden_field :submit_step
+
+  .form-row
+    .form-group.col-md-6
+      label.d-block
+        | Name: 
+        span.tx-danger
+          | *
+      = form.text_field :name, class: "form-control", placeholder: "Your Awesome Team Name"
+      .tx-danger.tx-12
+        = inline_errors(trello, :name)
+    .form-group.col-md-6
+      label.d-block
+        | Public Key: 
+        span.tx-danger
+          | *
+      = form.text_field :token, class: "form-control"
+      .tx-danger.tx-12
+        = inline_errors(trello, :token)
+  .form-row
+    .form-group.col-md-12
+      label.d-block
+        | Secret Token: 
+        span.tx-danger
+          | *
+      .input-group.mg-b-10
+        .input-group-prepend
+          span#basic-addon1.input-group-text
+            i.wd-15.ht-15[data-feather="trello"]
+        = form.password_field :secret, class: "form-control"
+      .tx-danger.tx-12
+        = inline_errors(trello, :secret)
+  .form-row
+    - @trello&.card_duplication&.include?('board_') ? board_warning_style = '' : board_warning_style = 'display:none;'
+    #unique-card-warning.alert.alert-warning[style="#{board_warning_style}"]
+        .alert-alert-heading
+          strong
+            | Warning!
+        | Creating cards based on their title or description for an entire board can be extremely slow, especially for boards with many archived cards.
+    .form-group.col-md-6
+      label.d-block
+        | Create Cards: 
+        span.tx-danger
+          | *
+      = form.select(:card_duplication, [['Always','always'], ['Only if title is unique for list', 'list_prevent_by_title'], ['Only if description is unique for list', 'list_prevent_by_description'],['Only if title is unique for board', 'board_prevent_by_title'], ['Only if description is unique for board', 'board_prevent_by_description']], {}, { :class => "custom-select" })
+      .tx-danger.tx-12
+        = inline_errors(trello, :card_duplication)
+    .form-group.col-md-1
+    .form-group.col-md-5
+      label.d-block
+        | Dynamic Objects:
+      .custom-control.custom-switch
+        = form.check_box :create_lists, {class: "custom-control-input"}, "true", "false"
+        = form.label(:create_lists, "Create lists (if missing)", class: "custom-control-label")
+      .tx-danger.tx-12
+        = inline_errors(trello, :create_lists)
+      .custom-control.custom-switch
+        = form.check_box :create_labels, {class: "custom-control-input"}, "true", "false"
+        = form.label(:create_labels, "Create labels (if missing)", class: "custom-control-label")
+      .tx-danger.tx-12
+        = inline_errors(trello, :create_labels)
+    
+  #trello-boards
+    = render @trello.submit_step, object: @trello, as: 'trello'
+
+javascript:
+  $('#integration_trello_card_duplication').on('change', function(e) {
+    if ($(this).val().indexOf('board_')) {
+      $('#unique-card-warning').slideUp();
+    } else {
+      $('#unique-card-warning').slideDown();
+    }
+  });

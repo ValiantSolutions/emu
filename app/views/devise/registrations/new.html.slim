@@ -1,0 +1,94 @@
+h5
+  | Request Account
+= form_for(resource, as: resource_name, url: registration_path(resource_name), remote: false) do |f|
+  .d-flex
+    .col-xl-10.col-l-12
+      .form-group#email-field
+        .d-flex.justify-content-between.mg-b-5
+          label.mg-b-0-f
+            | E-mail address
+        = f.text_field :email, autofocus: true, autocomplete: "off", class: 'form-control', placeholder: 'flightless.bird@australia.com'
+        .tx-danger.tx-12
+          = inline_errors(resource, :email)
+      .form-group
+        .d-flex.justify-content-between.mg-b-5
+          label.mg-b-0-f
+            | Password
+        = f.password_field :password, class: 'form-control', placeholder: "Enter your password", autocomplete: "off"
+        .tx-danger.tx-12
+          = inline_errors(resource, :password)
+      .form-group
+        .d-flex.justify-content-between.mg-b-5
+          label.mg-b-0-f
+            | Confirm Password
+        = f.password_field :password_confirmation, autocomplete: "new-password", class: 'form-control'
+        .tx-danger.tx-12
+          = inline_errors(resource, :password_confirmation)
+      button#registration_generate_qr_code.btn.btn-brand-02.btn-block[disabled=true data-toggle="modal" data-target="#confirm_2fa"]
+        | Generate QR code
+      /= f.submit "Request account", class: 'btn btn-brand-02 btn-block', disabled: true, id: 'registration_submit'
+      .d-flex.justify-content-end.mg-t-15
+        = link_to new_user_session_path, class: 'tx-12 tx-light' do
+          | Back to login page
+    /.divider-text.divider-vertical
+      | 2FA 
+    /.col-md-6
+      #configure-otp
+        .alert.bg-gray-100.btn-block
+          | Enter e-mail to generate QR code.
+
+  #confirm_2fa.modal.fade[tabindex="-1" role="dialog" aria-labelledby="confirm_2fa_label" aria-hidden="true"]
+    .modal-dialog.modal-dialog-centered[role="document"]
+      .modal-content
+        .modal-header
+          h5#confirm_2fa_label.modal-title
+            | Placeholder Title
+          button.close[type="button" data-dismiss="modal" aria-label="Close"]
+            span[aria-hidden="true"]
+              | ×
+        .modal-body
+          #configure-otp
+        .modal-footer
+          button.btn.btn-secondary[type="button" data-dismiss="modal"]
+            | Close
+          = f.submit "I have configured 2FA authentication.", class: 'btn btn-brand-02', id: 'registration_submit'
+    
+  /.col-md-4
+    .alert.alert-warning.btn-block[disabled=true]
+    | Generate
+  /= f.submit "Generate QR Code", class: 'btn btn-secondary btn-block'
+  
+    
+
+javascript:
+  barCodeTimeout = null;
+
+  function updateBarcode() {
+    var otpPath = Routes.otp_registration_path(btoa($('#user_email').val()));
+    $.ajax({
+      dataType: 'script',
+      type: 'get',
+      url: otpPath});
+    }
+
+  $(document).ready(function () {
+    $('#user_email').keyup(function () {
+      if(barCodeTimeout) {
+        clearTimeout(barCodeTimeout);
+      }
+      if ($("#user_email").val().length > 0) {
+        $('#registration_generate_qr_code').prop("disabled", false);
+        barCodeTimeout = setTimeout(updateBarcode, 400);
+      } else {
+        $('#registration_generate_qr_code').prop("disabled", true);
+      }
+    });
+
+    if ($('#user_email').val().length > 0) {
+      updateBarcode();
+      $('#registration_generate_qr_code').prop("disabled", false);
+    }
+    $('#registration_generate_qr_code').on('click', function(e) {
+      e.preventDefault();
+    });
+  });

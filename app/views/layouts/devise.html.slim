@@ -1,0 +1,27 @@
+html[lang="en"]
+  head
+    title
+      | Elasticsearch Management UI - Login
+    = stylesheet_link_tag "application", media: "all"
+    = javascript_include_tag "home"
+    = csrf_meta_tags
+  body
+    #toast
+      = render 'shared/notice'
+      #toast-scratch
+    .row.mg-t-200.row-xs
+      .media.align-items-stretch.justify-content-center.ht-100p.pos-relative
+        .media-body.align-items-center.d-none.d-lg-flex
+          .mx-wd-500
+            = image_tag("emu-home.png", alt: "Elastic Management UI", class: "img-fluid")
+      .col-md-5.col-lg-4
+        .sign-wrapper.mg-lg-l-50.mg-xl-l-60
+          .wd-100p
+            .df-logo
+              h1.tx-color-01.mg-b-5
+                | emu
+                span
+                  | admin
+            = render "shared/errors", c: resource
+            = yield           
+  .backdrop

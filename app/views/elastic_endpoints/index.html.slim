@@ -1,0 +1,124 @@
+- unless !@endpoints.nil? && @endpoints.length > 0
+  .row  
+    .col-sm-10
+      .card
+        .card-body
+          h5.card-title
+            | Hmm...there seems to be nothing here.
+          p.card-text
+            | We'll need to define at least one Elasticsearch endpoint to execute searches against.
+        .card-footer 
+          = link_to :new_elastic_endpoint do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  New Cluster
+- else
+  .row.mg-b-15
+    .col-sm-12
+      .d-flex.justify-content-end
+        = link_to :new_elastic_endpoint do
+          button.btn.btn-primary[type="button"]
+            i[data-feather="plus"]
+            |  New Cluster
+  .row
+    .col-sm-12
+      .table-responsive-sm
+        table.table.table-hover#elastic-endpoint-table
+          thead
+            tr
+              th[scope="col"]
+                | Name
+              th[scope="col"]
+                | Address
+              th[scope="col" class="no-sort"]
+                | SSL
+              th[scope="col" class="no-sort"]
+                | Status
+              th[scope="col" class="no-sort action-column"]
+          tbody
+            - @endpoints.each do |endpoint|
+              tr
+                td
+                  span.lh-9
+                    = truncate(endpoint.name, length: 34, separator: ' ', omission: '... ') {\
+                      link_to "(see full name)", "#", data: {placement: "top", title: 'Cluster Name', trigger: "hover", toggle: "popover", content: "#{endpoint.name}"}\
+                    }
+                td
+                  span.tx-roboto-mono.tx-13.tx-pink.lh-9
+                    
+                    = truncate(endpoint.address, length: 70, separator: '.', omission: '... ') {\
+                        link_to "(see full address)", "#", data: {placement: "top", title: endpoint.name, trigger: "hover", toggle: "popover", content: "#{endpoint.address}:#{endpoint.port}"}\
+                    }
+                td
+                  -  if endpoint.verify_ssl? && endpoint.https?
+                    - ssl_status = "lock" 
+                    - ssl_color = "success"
+                  - elsif !endpoint.verify_ssl? && endpoint.https?
+                    - ssl_status = "lock" 
+                    - ssl_color = "warning"
+                  - else
+                    - ssl_status = "unlock"
+                    - ssl_color = "danger"
+                  button.btn.btn-icon.btn-xs[class="btn-#{ssl_color}"]
+                    i[data-feather="#{ssl_status}"]
+                td
+                  button.btn.btn-icon.btn-xs[class="btn-#{endpoint_status_badge_color(endpoint)}"]
+                    i[data-feather=endpoint_status_icon(endpoint)]
+                td
+                  .dropdown.dropright
+                    button#droprightMenuButton.btn.btn-icon.btn-secondary.btn-xs.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                      i[data-feather="settings"]
+                      |  
+                    .dropdown-menu[aria-labelledby="droprightMenuButton"]
+                      = link_to elastic_endpoint_path(endpoint), :class => "dropdown-item" do
+                        | Refresh connection status
+                      = link_to edit_elastic_endpoint_path(endpoint), :class => "dropdown-item" do
+                        | Edit
+                      .dropdown-divider 
+                      = link_to elastic_endpoint_path(endpoint), data: {\
+                        title: "Delete #{endpoint.name}?",\
+                        verify: "#{endpoint.name}",\
+                        verify_text: "Type '#{endpoint.name}' to confirm",\
+                        confirm: '<h5 class="tx-danger">All searches, schedules, and alerts linked to this endpoint will also be deleted. This effectively will remove ALL linked items and may have unintended consequences.</h5>',\
+                        commit: 'Yes, delete this endpoint.', 'cancel-class': 'btn-secondary'},\
+                        class: "dropdown-item",\
+                        method: :delete do
+                          | Delete
+      = javascript_include_tag 'datatable'
+      javascript:
+         $('#elastic-endpoint-table').DataTable({
+           language: {
+             searchPlaceholder: 'Search...',
+             sSearch: '',
+             lengthMenu: '_MENU_ items/page',
+           },
+          columnDefs: [{ targets: 'no-sort', orderable: false }, { targets: 'action-column', width: "28px"}]
+         });
+         $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+         $('[data-toggle="popover"]').popover({
+          html: true,
+          template: '<div class="popover popover-header-primary event-debug-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+        });
+
+      /javascript:
+        var checkEndpointStatuses = function() {
+          $.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            type: 'get',
+            url: "#{elastic_endpoints_path(:format => :json )}",
+            headers: { 'X-CSRF-Token': $('meta[name=csrf-token]').attr('content') }
+          }).done(
+            function (response) {
+              for(var i = 0; i < response.length; i++) {
+                endpoint = response[i];
+                var targetElement = '#endpoint-status-' + (i+1);
+                $(targetElement).text(endpoint['status']);
+                $(targetElement).removeClass('badge-light badge-success badge-danger');
+                $(targetElement).addClass(endpoint['color']);
+              }
+            }
+          );
+          setTimeout(checkEndpointStatuses, 5000);
+        }
+        checkEndpointStatuses();
