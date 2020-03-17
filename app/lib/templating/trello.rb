@@ -1,15 +1,13 @@
 # frozen_string_literal: true
-
 module Templating
   class Trello < Liquid::Block
     def initialize(tag_name, input, tokens)
       super
-      trello_options = input.split(',').map { |o| YAML.safe_load(o.strip) if o =~ Liquid::TagAttributes }.reduce(:merge)
-
+      trello_options = input.split('\',').map { |o| YAML.safe_load(o.strip.gsub(/\'/,'')) }.reduce(:merge)
       @list_name = trello_options['list']
       @title = trello_options['title']
       @label = trello_options['label'] if trello_options.key?('label')
-
+      @checklists = trello_options['checklists'] if trello_options.key?('checklists')
       @tokens = tokens
     end
 
@@ -29,9 +27,11 @@ module Templating
               ), super.strip,
               parse_attributes(
                 @label, context
-              ))
+              ),
+              parse_checklists(@checklists, context))
           end
         rescue StandardError => e
+          #puts e
           details = ''
           details = @log&.details unless @log&.details.nil?
           details = "#{details} #{e}".strip
@@ -58,6 +58,21 @@ module Templating
       return var
     rescue StandardError => e
       var
+    end
+
+    def parse_checklists(var, context)
+      if var.is_a?(Hash)
+        parsed_hash = {}
+        var.each do |listname, items|
+          boxes = []
+          items.each do |check|
+            boxes.push(parse_attributes(check, context))
+          end
+          parsed_hash[parse_attributes(listname, context)] = boxes
+        end
+        return parsed_hash
+      end
+      nil
     end
 
     def capture_variables(var)

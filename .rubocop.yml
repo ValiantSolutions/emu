@@ -1,12 +1,12 @@
 Layout/AccessModifierIndentation:
   Enabled: true
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: true
   EnforcedColonStyle: key
   EnforcedLastArgumentHashStyle: always_inspect
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: true
   EnforcedStyle: with_first_parameter
 
@@ -65,19 +65,19 @@ Layout/FirstMethodArgumentLineBreak:
 Layout/HeredocArgumentClosingParenthesis:
   Enabled: true
 
-Layout/IndentFirstArgument:
+Layout/FirstArgumentIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
-Layout/IndentFirstArrayElement:
+Layout/FirstARrayElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
-Layout/IndentFirstHashElement:
+Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
-Layout/IndentFirstParameter:
+Layout/FirstParameterIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
@@ -148,7 +148,7 @@ Layout/SpaceInLambdaLiteral:
     - require_no_space
 
 # Enforce final new line.
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
   SupportedStyles:
     - final_newline

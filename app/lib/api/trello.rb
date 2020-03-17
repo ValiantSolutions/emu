@@ -34,10 +34,27 @@ module Api
       board(board_id)&.name
     end
 
-    def create_card(options)
+    def create_card(options, checklists = nil)
       t = Thread.new do
         Rails.application.executor.wrap do
-          Thread.current[:card] = @user&.client&.create(:card, options)
+          card = @user&.client&.create(:card, options)
+          Thread.current[:card] = card
+          unless checklists.nil?
+            checklists.each do |checklistname, items|
+              checklist_ops = {
+                'name' => checklistname,
+                'idCard' => card.id,
+                'idBoard' => card.board_id
+              }
+              checklist =  @user&.client&.create(:checklist, checklist_ops)
+        
+              items.each do |i|
+                checklist.add_item(i)
+              end
+              checklist.save
+              card.add_checklist(checklist)
+            end
+          end
         end
       end
       t.join

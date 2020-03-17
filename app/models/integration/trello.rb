@@ -158,7 +158,7 @@ module Integration
       connection&.create_label('name' => label_name, 'idBoard' => board_id, 'color' => color)
     end
 
-    def create_card(list_name, title, body, label = nil)
+    def create_card(list_name, title, body, label = nil, checklists = nil)
       return if list_name.nil? || title.nil?
 
       list_id = find_or_create_list_by_name(list_name)&.id
@@ -174,10 +174,10 @@ module Integration
       card_options = {
         'name' => title,
         'desc' => body,
-        'idList' => list_id
+        'idList' => list_id,
       }
       card_options['idLabels'] = label_id unless label_id.nil?
-      connection&.create_card(card_options)
+      connection&.create_card(card_options, checklists)
     end
 
     def create_test_card
