@@ -44,7 +44,7 @@
 
         a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% slack %}<br/>&nbsp;&nbsp;The Slack Message!<br/>{% endslack %}"]
           | slack
-        a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% trello list: 'The List Name', title: 'The Card Title', label: 'elk' %}<br/>&nbsp;&nbsp;The Card Body!<br/>{% endtrello %}"]
+        a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% trello list: 'The List Name', title: 'The Card Title', label: 'elk', checklists: '{"{{ e.request_id }}":["{{ e.duration }}"],"Second List":["A second item"]}' %}<br/>&nbsp;&nbsp;The Card Body!<br/>{% endtrello %}"]
           | trello
         a.nav-link.tx-roboto-mono.tx-13.tooltip-wide[href="#" data-template="<div class='tooltip' role='tooltip'><div class='arrow'></div><div class='tooltip-inner tooltip-liquid-tips'></div></div>" data-html="true" data-toggle="tooltip" data-placement="left" title="{% email subject: 'The Email Subject', to: 'alerts@domain.com admins@emu.com' %}<br/>&nbsp;&nbsp;The Email Body!<br/>{% endemail %}"]
           | email
