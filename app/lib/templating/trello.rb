@@ -3,7 +3,9 @@ module Templating
   class Trello < Liquid::Block
     def initialize(tag_name, input, tokens)
       super
-      trello_options = input.split('\',').map { |o| YAML.safe_load(o.strip.gsub(/\'/,'')) }.reduce(:merge)
+      trello_options = input.split('\',').map { |o| 
+        b = o.strip; b = b + '\'' if b.count('\'') == 1; YAML.safe_load(b) 
+      }.reduce(:merge)
       @list_name = trello_options['list']
       @title = trello_options['title']
       @label = trello_options['label'] if trello_options.key?('label')
