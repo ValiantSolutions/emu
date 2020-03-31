@@ -63,6 +63,7 @@ module Templating
     end
 
     def parse_checklists(var, context)
+      var = YAML.safe_load(var) if var.is_a?(String)
       if var.is_a?(Hash)
         parsed_hash = {}
         var.each do |listname, items|
