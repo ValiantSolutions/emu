@@ -17,7 +17,6 @@
             .form-row
               = form_with(model: c) do |form|
                 = form.fields_for :actions do |a|
-                  /- puts c.actions[a.index].inspect
                   - switch_disabled = c.actions[a.index].integratable.nil? ? true : false
                   - if a.index == 0
                     - name = 'Slack'
@@ -27,8 +26,9 @@
                     - name = 'Mail'
                   .col-md-4
                     .custom-control.custom-switch
-                      = a.check_box :enabled, {class: "custom-control-input", disabled: switch_disabled}, "true", "false"
-                      = a.label :enabled, "#{name}", class: 'custom-control-label d-flex'
+                      - custom_id = "permanent_#{c.id}_#{name}"
+                      = a.check_box :enabled, {id: "#{custom_id}", class: "custom-control-input", disabled: switch_disabled}, "true", "false"
+                      = a.label :enabled, "#{name}", class: 'custom-control-label d-flex', for: "#{custom_id}"
           
       .card-text.mg-t-10
         ul.pd-l-15
