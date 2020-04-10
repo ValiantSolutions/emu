@@ -8,6 +8,6 @@ class TemplateWorker
     job = Job.find_by_id(job_id)
     return if job&.alert.nil? || job&.alert&.payload.nil? || job&.alert&.conditional.nil?
     job.update!(status: :templating)
-    job.alert.payload.apply_template(job, results).inspect
+    job.alert.payload.apply_template(job, results) #.inspect
   end
 end
