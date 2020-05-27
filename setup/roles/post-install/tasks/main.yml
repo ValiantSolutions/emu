@@ -95,7 +95,7 @@
 
 - name: inform user to setup credentials
   debug:
-    msg: "At this point, please create a credentials file with the command cd {{ app_path }} && EDITOR='nano' rails credentials:edit"
+    msg: "At this point, please create a credentials file with the command cd {{ app_path }} && EDITOR='nano' bin/rails credentials:edit and ensure values for attr_encrypted and otp_key are present. Once complete, rerun this playbook."
   when: precompile_assets.failed 
 
 - meta: end_play
