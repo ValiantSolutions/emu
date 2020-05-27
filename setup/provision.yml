@@ -23,8 +23,8 @@
     database_password: '<password>'
     database_host: 'localhost'
     database_port: '3306'
-    google_oauth_client: '(optional) <client string>'
-    google_oauth_secret: '(optional) <secret>'
+    google_oauth_client: 'optional_client_string_leave_as_is_if_not_in_use'
+    google_oauth_secret: 'optional_secret_string_leave_as_is_if_not_in_use'
     redis_connection: 'redis://localhost:6379/0'
   become: yes
 

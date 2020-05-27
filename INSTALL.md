@@ -15,7 +15,7 @@
 * EMU runs through a nginx+passenger setup. Our production environment terminates the SSL at an AWS ELB. If you wish to terminate the SSL on the target machine itself, additional nginx configuration changes are needed.
 
 ## Requirements
-* A Linux server running a fresh installation of Ubuntu18
+* A Linux server running a fresh installation of _Ubuntu 18_
 * An Elasticsearch cluster running v7.x (can be local or remote)
 * Ansible installed and working on your local machine
 * Git installed and working on your local machine
@@ -59,7 +59,7 @@ Environment variables specific to EMU are defined in the [provision.yml playbook
   * ```database_host: localhost```
   * ```database_port: 3306```
 * Google OAuth (optional): [setup instructions from Google dev site](https://support.google.com/googleapi/answer/6158849?hl=en&ref_topic=7013279).
-  * ```google_oauth_client: <client>```
+  * ```google_oauth_client: <client>``` 
   * ```google_oauth_secret: <secret>```
 * Redis
   * ```redis_connection: redis://localhost:6379/0```
