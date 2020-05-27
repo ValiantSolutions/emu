@@ -105,33 +105,16 @@ mysql_config_include_files: []
 
 # Databases.
 mysql_databases: 
-  - name: emu_dev
-    encoding: utf8mb4
-    collation: utf8mb4_unicode_ci
-
-  - name: emu_test
-    encoding: utf8mb4
-    collation: utf8mb4_unicode_ci
-
-  - name: emu_prod
-    encoding: utf8mb4
-    collation: utf8mb4_unicode_ci
-
-  - name: hashes_dev
+  - name: "emu_{{ emu_env }}"
     encoding: utf8mb4
     collation: utf8mb4_unicode_ci
 
 # Users.
 mysql_users:
-   - name: hashes_dev
-     host: '%'
-     password: hashes_dev
-     priv: hashes_dev.*:ALL,GRANT
-
-  # - name: emu_test
-  #   host: '%'
-  #   password: emu_test
-  #   priv: emu_test.*:ALL,GRANT
+  - name: "{{ database_username }}"
+    host: '%'
+    password: "{{ database_password }}"
+    priv: "emu_{{ emu_env }}.*:ALL,GRANT"
 
 
 # Replication settings (replication is only enabled if master/user have values).

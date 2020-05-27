@@ -23,8 +23,8 @@
     database_password: '8BC9D2AF512930A0C44DB8F4177A0BEF'
     database_host: 'localhost'
     database_port: '3306'
-    google_oauth_client: 'empty'
-    google_oauth_secret: 'notused'
+    google_oauth_client: 'optional_client_string_leave_as_is_if_not_in_use'
+    google_oauth_secret: 'optional_secret_string_leave_as_is_if_not_in_use'
     redis_connection: 'redis://localhost:6379/0'
   become: yes
 
