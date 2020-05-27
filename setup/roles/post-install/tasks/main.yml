@@ -90,6 +90,16 @@
     chdir: "{{ app_path }}"
   become: yes
   become_user: 'emu'
+  ignore_errors: yes
+  register: precompile_assets
+
+- name: inform user to setup credentials
+  debug:
+    msg: "At this point, please create a credentials file with the command cd {{ app_path }} && EDITOR='nano' rails credentials:edit"
+  when: precompile_assets.failed 
+
+- meta: end_play
+  when: precompile_assets.failed
 
 - name: setup nginx with passenger
   file:
