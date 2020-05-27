@@ -62,7 +62,7 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'webdrivers'
   gem 'newrelic_rpm'
-  gem 'logstasher'
+  # gem 'logstasher'
 end
 
 # group :test do

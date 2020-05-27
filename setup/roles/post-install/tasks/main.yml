@@ -85,52 +85,69 @@
     dest: '/lib/systemd/system/sidekiq.service'
 
 - name: precompile assets
-  shell: 'RAILS_ENV=production bin/rails assets:precompile db:migrate'
+  shell: 'RAILS_ENV={{ emu_env }} bin/rails assets:precompile db:migrate'
   args:
     chdir: "{{ app_path }}"
   become: yes
   become_user: 'emu'
   ignore_errors: yes
   register: precompile_assets
+  when: emu_env == 'production'
 
 - name: inform user to setup credentials
   debug:
     msg: "At this point, please create a credentials file with the command cd {{ app_path }} && EDITOR='nano' bin/rails credentials:edit and ensure values for attr_encrypted and otp_key are present. Once complete, rerun this playbook."
-  when: precompile_assets.failed 
+  when: 
+    - emu_env == 'production'
+    - precompile_assets.failed 
 
 - meta: end_play
-  when: precompile_assets.failed
+  when: 
+    - emu_env == 'production'
+    - precompile_assets.failed 
 
 - name: setup nginx with passenger
   file:
     src: '/usr/share/nginx/modules-available/mod-http-passenger.load'
     dest: '/etc/nginx/modules-enabled/50-mod-http-passenger.conf'
     state: link
-
+  when: 
+    - emu_env == 'production'
+    
 - name: copy nginx config
   template:
     src: 'nginx.conf.j2'
     dest: '/etc/nginx/nginx.conf'
+  when: 
+    - emu_env == 'production'
 
 - name: remove default site
   file:
     path: '/etc/nginx/sites-enabled/default'
     state: absent
+  when: 
+    - emu_env == 'production'
 
 - name: template emu nginx config
   template:
     src: 'emu.j2'
     dest: '/etc/nginx/sites-enabled/emu'
   notify: reload nginx
+  when: 
+    - emu_env == 'production'
 
 - name: enable sidekiq service on startup
   service:
     name: 'sidekiq'
     enabled: yes
     state: started
+  when: 
+    - emu_env == 'production'
 
 - name: enable nginx service on startup
   service:
     name: 'nginx'
     enabled: yes
     state: stopped
+  when: 
+    - emu_env == 'production'
