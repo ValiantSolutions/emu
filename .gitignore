@@ -48,3 +48,4 @@ emu.code-workspace
 config/credentials.yml.enc
 
 /config/master.key
+config/database.yml
