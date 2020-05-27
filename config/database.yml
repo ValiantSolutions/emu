@@ -2,13 +2,13 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: emu_dev
-  password: emu_dev
+  username: 42A4F9730140BCF7A22AEECD7EE1447A
+  password: 8BC9D2AF512930A0C44DB8F4177A0BEF
   host: localhost
 
 development:
   <<: *default
-  database: emu_dev
+  database: emu_development
 
 test:
   <<: *default
