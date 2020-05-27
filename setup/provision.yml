@@ -14,17 +14,17 @@
     ansible_user: ubuntu
     # below are emu environment variables:
     app_path: '/emu'
-    emu_repo: 'https://github.com/ValiantSolutions/emu.git'
-    emu_env: 'production'
-    server_name: 'your-emu-install.fqdn.com'
-    rails_master_key: '<see install guide for details>'
-    database_name: 'emu_prod'
-    database_username: '<username>'
-    database_password: '<password>'
+    emu_repo: 'https://github.helix.gsa.gov/GSASecOps/emu.git'
+    emu_env: 'development'
+    server_name: 'emu.dev-sec.bsp.gsa.gov'
+    rails_master_key: 'D0F742C90734CA66DC266D2EEB97416E'
+    database_name: 'emu_dev'
+    database_username: '42A4F9730140BCF7A22AEECD7EE1447A'
+    database_password: '8BC9D2AF512930A0C44DB8F4177A0BEF'
     database_host: 'localhost'
     database_port: '3306'
-    google_oauth_client: '(optional) <client string>'
-    google_oauth_secret: '(optional) <secret>'
+    google_oauth_client: 'empty'
+    google_oauth_secret: 'notused'
     redis_connection: 'redis://localhost:6379/0'
   become: yes
 

@@ -1,5 +1,5 @@
 ---
-- include_vars: 'env.yml.vault'
+#- include_vars: 'env.yml.vault'
 
 - name: enable redis server on startup
   service:
