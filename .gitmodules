@@ -1,0 +1,3 @@
+[submodule "engines/hostmon"]
+	path = engines/hostmon
+	url = git@github.helix.gsa.gov:GSASecOps/hostmon.git
