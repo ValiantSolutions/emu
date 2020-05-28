@@ -19,7 +19,7 @@ x-Procfile.dev
 # Ignore uploaded files in development.
 storage/*
 !storage/.keep
-
+start.sh
 public/assets
 .byebug_history
 .vault
@@ -51,3 +51,6 @@ config/credentials.yml.enc
 config/database.yml
 
 /config/master.key
+Procfile
+.env
+
