@@ -95,3 +95,5 @@ group :test do
   gem 'rails-controller-testing'
   gem 'rspec-sidekiq'
 end
+
+gem 'hostmon', path: 'engines/hostmon'

@@ -66,4 +66,6 @@ Rails.application.routes.draw do
       get 'pending', to: 'accounts#pending'
     end
   end
+
+  mount Hostmon::Engine => "/hostmon", :as => "hostmon" 
 end

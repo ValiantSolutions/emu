@@ -55,6 +55,12 @@ GIT
   specs:
     rspec-support (3.10.0.pre)
 
+PATH
+  remote: engines/hostmon
+  specs:
+    hostmon (0.1.0)
+      rails (~> 6.0.2, >= 6.0.2.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -516,6 +522,7 @@ DEPENDENCIES
   font-awesome-sass
   fugit
   groupdate
+  hostmon!
   jbuilder (~> 2.7)
   jquery-rails
   js-routes

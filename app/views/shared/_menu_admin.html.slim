@@ -9,20 +9,20 @@
         | User Accounts
     ul
       li
-        = link_to :accounts do
+        = link_to main_app.accounts_path do
           | Manage Users
       li
-        = link_to :pending_accounts do
+        = link_to main_app.pending_accounts_path do
           | Pending Approvals
   - params[:controller].include?("tasks") ? active_class = 'active show' : active_class = nil
   li.nav-item[class="#{active_class}"]
-    = link_to :tasks, :class => "nav-link" do
+    = link_to main_app.tasks_path, :class => "nav-link" do
       i[data-feather="briefcase"]
       span
         | Maintenance Jobs
   - params[:controller].include?("settings") ? active_class = 'active show' : active_class = nil
   li.nav-item[class="#{active_class}"]
-    = link_to :settings, :class => "nav-link" do
+    = link_to main_app.settings_path, :class => "nav-link" do
       i[data-feather="settings"]
       span
         | Advanced Settings

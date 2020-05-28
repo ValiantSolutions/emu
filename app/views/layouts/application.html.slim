@@ -23,7 +23,7 @@ html[lang="en"]
           
     .sidebarMenu.aside.aside-fixed
       .aside-header.tx-sans
-        = link_to :dashboard, :class => "aside-logo" do
+        = link_to main_app.dashboard_path, :class => "aside-logo" do
           | emu
           span
             | admin
@@ -36,7 +36,7 @@ html[lang="en"]
             a.avatar[href=""]
               img.rounded-circle[src="#{avatar_url(current_user, 48)}" alt=""]
             .aside-alert-link
-              = link_to :destroy_user_session, data: { toggle: 'tooltip'}, title: 'Sign out' do
+              = link_to main_app.destroy_user_session_path, data: { toggle: 'tooltip'}, title: 'Sign out' do
                 i[data-feather="log-out"]
           .aside-loggedin-user
             a.d-flex.align-items-center.justify-content-between.mg-b-2[href="#loggedinMenu" data-toggle="collapse"]
@@ -49,7 +49,7 @@ html[lang="en"]
             | Dashboard
           - params[:controller] == "dashboard" ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :dashboard, :class => "nav-link" do
+            = link_to main_app.dashboard_path, :class => "nav-link" do
               i[data-feather="globe"]
               span
                 | Overview & Status
@@ -57,13 +57,13 @@ html[lang="en"]
             | Alerting
           - (params[:controller] == "permanents" && params[:action] == 'index') ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :permanents, :class => 'nav-link' do
+            = link_to main_app.permanents_path, :class => 'nav-link' do
               i[data-feather="layers"]
               span
                 | Alert Overview 
           - (params[:controller] == "permanents" && params[:action] == 'new') ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :new_permanent, :class => 'nav-link' do
+            = link_to main_app.new_permanent_path, :class => 'nav-link' do
               i[data-feather="bell"]
               span
                 | Create New Alert
@@ -71,7 +71,7 @@ html[lang="en"]
             | Scheduling
           - params[:controller] == "schedules" ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :schedules, :class => 'nav-link' do
+            = link_to main_app.schedules_path, :class => 'nav-link' do
               i[data-feather="calendar"]
               span
                 | Schedule Management
@@ -79,13 +79,13 @@ html[lang="en"]
             | Elasticsearch
           - params[:controller] == "elastic_endpoints" ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :elastic_endpoints, :class => 'nav-link' do
+            = link_to main_app.elastic_endpoints_path, :class => 'nav-link' do
               i[data-feather="activity"]
               span
                 | Clusters
           - params[:controller] == "searches" ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :searches, :class => 'nav-link' do
+            = link_to main_app.searches_path, :class => 'nav-link' do
               i[data-feather="search"]
               span
                 | Saved Searches
@@ -93,19 +93,19 @@ html[lang="en"]
             | Integrations
           - params[:controller].include?("slacks") ? active_class = 'active show' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :integration_slacks, :class => "nav-link" do
+            = link_to main_app.integration_slacks_path, :class => "nav-link" do
               i[data-feather="slack"]
               span
                 | Slack
           - params[:controller].include?("trellos") ? active_class = 'active show' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :integration_trellos, :class => "nav-link" do
+            = link_to main_app.integration_trellos_path, :class => "nav-link" do
               i[data-feather="trello"]
               span
                 | Trello
           - params[:controller].include?("emails") ? active_class = 'active show' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :integration_emails, :class => "nav-link" do
+            = link_to main_app.integration_emails_path, :class => "nav-link" do
               i[data-feather="mail"]
               span
                 | E-mail
@@ -114,7 +114,7 @@ html[lang="en"]
             | Tools
           - (params[:controller] == "temporaries") ? active_class = 'active' : active_class = nil
           li.nav-item[class="#{active_class}"]
-            = link_to :temporaries, :class => "nav-link" do
+            = link_to main_app.temporaries_path, :class => "nav-link" do
               i[data-feather="eye"]
               span
                 | Event Debugger
