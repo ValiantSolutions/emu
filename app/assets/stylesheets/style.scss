@@ -12924,7 +12924,7 @@ textarea.parsley-success:focus {
       background-color: transparent;
       overflow: visible;
       display: flex;
-      //justify-content: center;
+      justify-content: center;
       order: 2;
       transform: none;
       z-index: auto;
@@ -12962,8 +12962,8 @@ textarea.parsley-success:focus {
       align-items: center;
       flex-direction: row;
       padding: 0;
-      width: 100%;
-      max-width: 70%;
+      //width: 100%;
+      //max-width: 70%;
       margin-top: -3px; } }
   .navbar-menu .nav-item + .nav-item {
     margin-top: 10px; }

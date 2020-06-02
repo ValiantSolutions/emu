@@ -54,3 +54,4 @@ config/database.yml
 Procfile
 .env
 
+/template/**/*

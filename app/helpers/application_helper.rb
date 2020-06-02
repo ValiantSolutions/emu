@@ -71,4 +71,20 @@ module ApplicationHelper
       user.avatar_url
     end
   end
+
+  def generate_plugin_nav
+    emu_plugins = []
+    instances = ::Rails::Engine.subclasses.map(&:instance)
+    instances.each do |i|
+
+      if i.class.respond_to?(:emu_plugin) && i.class.emu_plugin = true
+        if i.class.respond_to?(:nav_menu_item) && !i.class.nav_menu_item.nil? && i.class.respond_to?(:mount_point) && !i.class.mount_point.nil?
+          emu_plugins.push({ nav_menu_item: i.class.nav_menu_item, path: i.class.mount_point })
+        end
+      end
+
+    end
+    puts emu_plugins.inspect
+    # stopped here
+  end
 end

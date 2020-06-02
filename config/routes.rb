@@ -67,5 +67,5 @@ Rails.application.routes.draw do
     end
   end
 
-  mount Hostmon::Engine => "/hostmon", :as => "hostmon" 
+  #mount Hostmon::Engine => "/hostmon", :as => "hostmon" 
 end
