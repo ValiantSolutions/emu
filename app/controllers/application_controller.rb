@@ -14,7 +14,9 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from Pundit::NotAuthorizedError, with: :permission_denied
-  
+
+  breadcrumb 'Alerting', '', match: :exact
+
   def user_not_authorized
     flash[:error] = 'You are not authorized to perform this action.'
     redirect_back(fallback_location: root_path)

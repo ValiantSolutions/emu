@@ -79,12 +79,17 @@ module ApplicationHelper
 
       if i.class.respond_to?(:emu_plugin) && i.class.emu_plugin = true
         if i.class.respond_to?(:nav_menu_item) && !i.class.nav_menu_item.nil? && i.class.respond_to?(:mount_point) && !i.class.mount_point.nil?
-          emu_plugins.push({ nav_menu_item: i.class.nav_menu_item, path: i.class.mount_point })
+          emu_plugins.push({ nav_menu_item: i.class.nav_menu_item, path: i.class.mount_point, as: i })
         end
       end
 
     end
-    puts emu_plugins.inspect
-    # stopped here
+    #puts emu_plugins.inspect
+    emu_plugins
+  end
+
+  def highlight_engine_nav(path, mount_point)
+    return "active" if path.include?(mount_point)
+    return false
   end
 end

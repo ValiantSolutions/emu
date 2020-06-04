@@ -1,29 +1,60 @@
 - if u.admin?
-  li.nav-label.mg-t-25
-    | Administration
-  - params[:controller].include?("account") ? active_class = 'active show' : active_class = nil
-  li.nav-item.with-sub[class="#{active_class}"]
-    a.nav-link[href=""]
-      i[data-feather="user"]
-      span
-        | User Accounts
-    ul
-      li
-        = link_to main_app.accounts_path do
-          | Manage Users
-      li
-        = link_to main_app.pending_accounts_path do
-          | Pending Approvals
-  - params[:controller].include?("tasks") ? active_class = 'active show' : active_class = nil
-  li.nav-item[class="#{active_class}"]
-    = link_to main_app.tasks_path, :class => "nav-link" do
-      i[data-feather="briefcase"]
-      span
-        | Maintenance Jobs
-  - params[:controller].include?("settings") ? active_class = 'active show' : active_class = nil
-  li.nav-item[class="#{active_class}"]
-    = link_to main_app.settings_path, :class => "nav-link" do
-      i[data-feather="settings"]
-      span
-        | Advanced Settings
-- generate_plugin_nav
+  li.nav-item.with-sub[class="#{highlight_engine_nav(request.path, '/administration')}"]
+    a.nav-link[href="#"]
+      svg.feather.feather-layers[xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"]
+        polygon[points="12 2 2 7 12 12 22 7 12 2"]
+        polyline[points="2 17 12 22 22 17"]
+        polyline[points="2 12 12 17 22 12"]
+      |  Administration
+    .navbar-menu-sub
+      .d-lg-flex
+        ul
+          li.nav-label
+            | Users
+          li.nav-sub-item
+            /a.nav-sub-link[href="page-signin.html"]
+            = link_to main_app.accounts_path, class: 'nav-sub-link' do
+              svg.feather.feather-users[xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"]
+                path[d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"]
+                circle[cx="9" cy="7" r="4"]
+                path[d="M23 21v-2a4 4 0 0 0-3-3.87"]
+                path[d="M16 3.13a4 4 0 0 1 0 7.75"]
+              |  Account Management
+          li.nav-label.mg-t-20
+            | Advanced
+          li.nav-sub-item
+            /a.nav-sub-link[href="page-profile-view.html"]
+            = link_to main_app.tasks_path, :class => "nav-sub-link" do
+              i[data-feather="briefcase"]
+              |  Maintenance Jobs
+          li.nav-sub-item
+            a.nav-sub-link[href="page-connections.html"]
+              i[data-feather="settings"]
+              |  System Settings
+  / li.nav-label.mg-t-25
+  /   | Administration
+  / - params[:controller].include?("account") ? active_class = 'active show' : active_class = nil
+  / li.nav-item.with-sub[class="#{active_class}"]
+  /   a.nav-link[href=""]
+  /     i[data-feather="user"]
+  /     span
+  /       | User Accounts
+  /   ul
+  /     li
+  /       = link_to main_app.accounts_path do
+  /         | Manage Users
+  /     li
+  /       = link_to main_app.pending_accounts_path do
+  /         | Pending Approvals
+  / - params[:controller].include?("tasks") ? active_class = 'active show' : active_class = nil
+  / li.nav-item[class="#{active_class}"]
+  /   = link_to main_app.tasks_path, :class => "nav-link" do
+  /     i[data-feather="briefcase"]
+  /     span
+  /       | Maintenance Jobs
+  / - params[:controller].include?("settings") ? active_class = 'active show' : active_class = nil
+  / li.nav-item[class="#{active_class}"]
+  /   = link_to main_app.settings_path, :class => "nav-link" do
+  /     i[data-feather="settings"]
+  /     span
+  /       | Advanced Settings
