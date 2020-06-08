@@ -10,14 +10,26 @@ class AdminPolicy < ApplicationPolicy
   end
 
   def update?
-    user.admin? || record == user
+    user.admin? 
   end
 
   def destroy?
-    user.admin? || record == user
+    user.admin? 
   end
 
   def show?
-    user.admin? || record == user
+    user.admin? 
+  end
+
+  def index?
+    user.admn?
+  end
+
+  def new?
+    user.admin?
+  end
+
+  def create?
+    user.admin?
   end
 end

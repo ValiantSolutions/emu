@@ -19,7 +19,7 @@ RSpec.describe 'Integration::Slacks', type: :request do
 
   describe 'GET' do
     before(:each) do
-      login_user
+      login_admin
     end
 
     it '#index' do
@@ -55,7 +55,7 @@ RSpec.describe 'Integration::Slacks', type: :request do
 
   describe 'POST' do
     before(:each) do
-      login_user
+      login_admin
       @integration_slack = FactoryBot.attributes_for(:integration_slack)
     end
 
@@ -83,7 +83,7 @@ RSpec.describe 'Integration::Slacks', type: :request do
 
   describe 'PUT' do
     before(:each) do
-      login_user
+      login_admin
       @integration_slack = FactoryBot.create(:integration_slack)
     end
 
@@ -136,7 +136,7 @@ RSpec.describe 'Integration::Slacks', type: :request do
 
   describe 'DELETE' do
     before(:each) do
-      login_user
+      login_admin
       @integration_slack = FactoryBot.create(:integration_slack)
     end
 

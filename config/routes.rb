@@ -68,7 +68,4 @@ Rails.application.routes.draw do
     get 'u/otp/:email', to: 'users/registrations#otp_setup', as: 'otp_registration'
   end
 
-  
-
-  #mount Hostmon::Engine => "/hostmon", :as => "hostmon" 
 end

@@ -19,7 +19,7 @@ RSpec.describe SearchesController, type: :request do
 
   describe 'GET' do
     before(:each) do
-      login_user
+      login_admin
     end
 
     it '#index' do
@@ -27,12 +27,12 @@ RSpec.describe SearchesController, type: :request do
       expect(response).to render_template(:index)
     end
 
-    context 'has no elastic endpoints' do
-      it 'redirects #new' do
-        get new_search_path
-        expect(current_path).to redirect_to(elastic_endpoints_path)
-      end
-    end
+    # context 'has no elastic endpoints' do
+    #   it 'redirects #new' do
+    #     get new_search_path
+    #     expect(current_path).to redirect_to(elastic_endpoints_path)
+    #   end
+    # end
 
     context 'has elastic endpoints' do
       before(:each) do
@@ -59,7 +59,7 @@ RSpec.describe SearchesController, type: :request do
 
   describe 'POST' do
     before(:each) do
-      login_user
+      login_admin
       @elastic_endpoint = ElasticEndpoint.first || FactoryBot.create(:elastic_endpoint)
       @search = FactoryBot.attributes_for(:search, elastic_endpoint_id: @elastic_endpoint.id)
     end
@@ -88,7 +88,7 @@ RSpec.describe SearchesController, type: :request do
 
   describe 'PUT' do
     before(:each) do
-      login_user
+      login_admin
       @search = FactoryBot.create(:search)
     end
 
@@ -141,7 +141,7 @@ RSpec.describe SearchesController, type: :request do
 
   describe 'DELETE' do
     before(:each) do
-      login_user
+      login_admin
       @search = FactoryBot.create(:search)
     end
 

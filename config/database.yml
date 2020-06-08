@@ -13,8 +13,6 @@ development:
 test:
   <<: *default
   database: emu_test
-  username: emu_test
-  password: emu_test
 
 production:
   <<: *default

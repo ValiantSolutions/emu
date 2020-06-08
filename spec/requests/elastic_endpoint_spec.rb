@@ -12,7 +12,7 @@ RSpec.describe ElasticEndpointsController, type: :request do
 
   describe 'GET' do
     before(:each) do
-      login_user
+      login_admin
     end
 
     it '#index' do
@@ -45,7 +45,7 @@ RSpec.describe ElasticEndpointsController, type: :request do
 
   describe 'POST' do
     before(:each) do
-      login_user
+      login_admin
       @elastic_endpoint = FactoryBot.attributes_for(:elastic_endpoint)
     end
 
@@ -79,7 +79,7 @@ RSpec.describe ElasticEndpointsController, type: :request do
 
   describe 'PUT' do
     before(:each) do
-      login_user
+      login_admin
       @elastic_endpoint = FactoryBot.create(:elastic_endpoint)
     end
 
@@ -156,7 +156,7 @@ RSpec.describe ElasticEndpointsController, type: :request do
 
   describe 'DELETE' do
     before(:each) do
-      login_user
+      login_admin
       @elastic_endpoint = FactoryBot.create(:elastic_endpoint)
     end
 
@@ -174,7 +174,7 @@ RSpec.describe ElasticEndpointsController, type: :request do
 
   describe 'SHOW' do
     before(:each) do
-      login_user
+      login_admin
       @elastic_endpoint = FactoryBot.create(:elastic_endpoint)
     end
 

@@ -41,14 +41,30 @@ Layout/EmptyLinesAroundBlockBody:
 # Note(maxh): Not sure about this one given we already have EmptyLines above.
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
-# Why AllowForAlignment: false?
-# 1) Cleaner diffs. For example, when you add a longer key to a hash,
-#    you need to update all the other rows to maintain alignment. This
-#    means your diffs become harder to read. It looks like more is changing
-#    than actually is.
-# 2) Better to have one way to do things than two.
-# 3) You can still use rubocop:disable comments in exceptional cases.
+
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true
+# For more information: https://docs.rubocop.org/en/latest/versioning/
+
 Layout/ExtraSpacing:
   Enabled: true
   AllowForAlignment: false
@@ -69,7 +85,7 @@ Layout/FirstArgumentIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
-Layout/FirstARrayElementIndentation:
+Layout/FirstArrayElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
 
@@ -192,21 +208,21 @@ Lint/UnusedMethodArgument:
 # Metrics
 #########
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
   AutoCorrect: true
 
 Metrics/MethodLength:
   Max: 15
 
-Documentation:
+Style/DocumentationMethod:
   Enabled: false
 
-EndOfLine:
+Layout/EndOfLine:
   Enabled: false
   EnforcedStyle: native
 
 AllCops:
-  Excludes:
+  Exclude:
     - 'spec/**/*'
     - 'vendor/**/*'

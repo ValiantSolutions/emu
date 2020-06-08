@@ -109,12 +109,23 @@ mysql_databases:
     encoding: utf8mb4
     collation: utf8mb4_unicode_ci
 
+  - name: "emu_test"
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+
 # Users.
 mysql_users:
   - name: "{{ database_username }}"
     host: '%'
     password: "{{ database_password }}"
     priv: "{{ database_name }}.*:ALL,GRANT"
+
+  - name: "{{ database_username }}"
+    host: '%'
+    password: "{{ database_password }}"
+    priv: "emu_test.*:ALL,GRANT"
+    append_privs: yes
+
 
 
 # Replication settings (replication is only enabled if master/user have values).
