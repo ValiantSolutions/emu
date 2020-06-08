@@ -4,14 +4,14 @@
       .card
         .card-body
           h5.card-title
-            | Hold On A Second
+            | Elasticsearch cluster not found!
           p.card-text
             | You'll need to configure at least one Elasticsearch cluster before you can create a search.
         .card-footer 
           = link_to :new_elastic_endpoint do
             button.btn.btn-primary[type="button"]
               i[data-feather="plus"]
-              |  New Endpoint
+              |  New cluster
 - else
   .row.mg-b-15
     .col-sm-12

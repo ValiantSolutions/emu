@@ -1,3 +1,3 @@
-class Integration::SlackPolicy < ::AllowAllPolicy
+class Integration::SlackPolicy < ::AdminPolicy
   
 end

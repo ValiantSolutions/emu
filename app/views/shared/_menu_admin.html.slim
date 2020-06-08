@@ -5,32 +5,51 @@
         polygon[points="12 2 2 7 12 12 22 7 12 2"]
         polyline[points="2 17 12 22 22 17"]
         polyline[points="2 12 12 17 22 12"]
-      |  Administration
+      | Administration
     .navbar-menu-sub
       .d-lg-flex
+        ul
+          li.nav-label
+            | Elasticsearch
+          li.nav-sub-item
+            /a.nav-sub-link[href="page-signin.html"]
+            = link_to main_app.elastic_endpoints_path, class: 'nav-sub-link' do
+              i[data-feather="activity"]
+              | Manage Clusters
+          li.nav-label.mg-t-20 Integrations
+          li.nav-sub-item
+            = link_to main_app.integration_slacks_path, class: 'nav-sub-link' do
+              i[data-feather="slack"]
+              | Slack
+          li.nav-sub-item
+            = link_to main_app.integration_trellos_path, class: 'nav-sub-link' do
+              i[data-feather="trello"]
+              | Trello
+          li.nav-sub-item
+            = link_to main_app.integration_emails_path, class: 'nav-sub-link' do
+              i[data-feather="mail"]
+              | E-mail
         ul
           li.nav-label
             | Users
           li.nav-sub-item
             /a.nav-sub-link[href="page-signin.html"]
             = link_to main_app.accounts_path, class: 'nav-sub-link' do
-              svg.feather.feather-users[xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"]
-                path[d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"]
-                circle[cx="9" cy="7" r="4"]
-                path[d="M23 21v-2a4 4 0 0 0-3-3.87"]
-                path[d="M16 3.13a4 4 0 0 1 0 7.75"]
-              |  Account Management
+              i[data-feather="users"]
+              | Account Management
           li.nav-label.mg-t-20
             | Advanced
           li.nav-sub-item
             /a.nav-sub-link[href="page-profile-view.html"]
             = link_to main_app.tasks_path, :class => "nav-sub-link" do
               i[data-feather="briefcase"]
-              |  Maintenance Jobs
+              | Maintenance Jobs
           li.nav-sub-item
             a.nav-sub-link[href="page-connections.html"]
               i[data-feather="settings"]
-              |  System Settings
+              | System Settings
+  
+  
   / li.nav-label.mg-t-25
   /   | Administration
   / - params[:controller].include?("account") ? active_class = 'active show' : active_class = nil

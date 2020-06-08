@@ -1,3 +1,3 @@
-class ElasticEndpointPolicy < AllowAllPolicy
+class ElasticEndpointPolicy < AdminPolicy
 
 end

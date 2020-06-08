@@ -51,7 +51,6 @@ html[lang="en"]
                 = plugin[:nav_menu_item]
           = render 'shared/menu_admin', u: current_user
           
-  
       .navbar-right
         = link_to main_app.destroy_user_session_path, class: 'dropdown-link', data: { toggle: 'tooltip'}, title: 'Sign out' do
           i[data-feather="log-out" height="18" width="18"]
@@ -60,7 +59,11 @@ html[lang="en"]
     .content.content-components.mg-t-60
       = render 'shared/notice'
       .container.pd-x-0
-        .d-sm-flex.align-items-center.justify-content-between
+        h4.df-title.tx-spacing--1
+          - breadcrumb_trail.each_with_index do |crumb, i|
+            - if (i + 1) == breadcrumb_trail.count
+              = crumb.name
+        .d-sm-flex.align-items-center.justify-content-between.mg-b-20
           div
             nav[aria-label="breadcrumb"]
               ol.breadcrumb.breadcrumb-style1.mg-b-10
@@ -68,10 +71,7 @@ html[lang="en"]
                   - class_active = crumb.current? ? 'active' : ''
                   li.breadcrumb-item[class="#{class_active}"]
                     = link_to_unless crumb.current? || crumb.url.blank?, crumb.name, crumb.url, (crumb.current? ? {'aria-current' => 'page'} : {})
-        h4.df-title.mg-b-20.mg-lg-b-25.mg-xl-b-30.tx-spacing--1
-          - breadcrumb_trail.each_with_index do |crumb, i|
-            - if (i + 1) == breadcrumb_trail.count
-              = crumb.name
+        
 
         = yield
     

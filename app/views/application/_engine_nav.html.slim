@@ -1,19 +1,6 @@
 #sidebarMenu.sidebar.sidebar-fixed.bg-white.ps
-  /.sidebar-header
-    a#mainMenuOpen href="" 
-      svg.feather.feather-menu fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox=("0 0 24 24") width="24" xmlns="http://www.w3.org/2000/svg" 
-        line x1="3" x2="21" y1="12" y2="12" 
-        line x1="3" x2="21" y1="6" y2="6" 
-        line x1="3" x2="21" y1="18" y2="18" 
-    h5 Components
-    a#sidebarMenuClose href="" 
-      svg.feather.feather-x fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox=("0 0 24 24") width="24" xmlns="http://www.w3.org/2000/svg" 
-        line x1="18" x2="6" y1="6" y2="18" 
-        line x1="6" x2="18" y1="6" y2="18" 
-  /! df-sidebar-header
   .sidebar-body
     ul.sidebar-nav
-      /li.nav-label.mg-b-25.tx-brand-02 Intelligent Alerting
       li.nav-label.mg-b-15 Dashboard
       - params[:controller] == "dashboard" ? active_class = 'active' : active_class = nil
       li.nav-item.mg-b-15
@@ -38,94 +25,19 @@
           i[data-feather="calendar"]
           | Schedule Management
       li.nav-label.mg-b-15 Elasticsearch
-      - params[:controller] == "elastic_endpoints" ? active_class = 'active' : active_class = nil
-      li.nav-item.mg-b-15
-        = link_to main_app.elastic_endpoints_path, :class => "nav-link #{active_class}" do
-          i[data-feather="activity"]
-          | Clusters
       - params[:controller] == "searches" ? active_class = 'active' : active_class = nil
       li.nav-item.mg-b-15
         = link_to main_app.searches_path, :class => "nav-link #{active_class}" do
           i[data-feather="search"]
           | Saved Searches
-      li.nav-label.mg-b-15 Integrations
-      - params[:controller].include?("slacks") ? active_class = 'active show' : active_class = nil
-      li.nav-item.mg-b-15
-        = link_to main_app.integration_slacks_path, :class => "nav-link #{active_class}" do
-          i[data-feather="slack"]
-          | Slack
-      - params[:controller].include?("trellos") ? active_class = 'active show' : active_class = nil
-      li.nav-item.mg-b-15
-        = link_to main_app.integration_trellos_path, :class => "nav-link #{active_class}" do
-          i[data-feather="trello"]
-          | Trello
-      - params[:controller].include?("emails") ? active_class = 'active show' : active_class = nil
-      li.nav-item.mg-b-15
-        = link_to main_app.integration_emails_path, :class => "nav-link #{active_class}" do
-          i[data-feather="mail"]
-          | E-mail
       li.nav-label.mg-b-15 Tools
       - (params[:controller] == "temporaries") ? active_class = 'active' : active_class = nil
       li.nav-item.mg-b-15
         = link_to main_app.temporaries_path, :class => "nav-link #{active_class}" do
           i[data-feather="eye"]
           | Event Debugger
-  /! sidebar-body
   .ps__rail-x style=("left: 0px; top: 0px;") 
     .ps__thumb-x style=("left: 0px; width: 0px;") tabindex="0" 
   .ps__rail-y style=("top: 0px; right: 0px;") 
     .ps__thumb-y style=("top: 0px; height: 0px;") tabindex="0" 
-
-
-/.sidebarMenu.aside.aside-fixed
-  
-      - params[:controller] == "schedules" ? active_class = 'active' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.schedules_path, :class => 'nav-link' do
-          i[data-feather="calendar"]
-          span
-            | Schedule Management
-      li.nav-label.mg-t-25
-        | Elasticsearch
-      - params[:controller] == "elastic_endpoints" ? active_class = 'active' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.elastic_endpoints_path, :class => 'nav-link' do
-          i[data-feather="activity"]
-          span
-            | Clusters
-      - params[:controller] == "searches" ? active_class = 'active' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.searches_path, :class => 'nav-link' do
-          i[data-feather="search"]
-          span
-            | Saved Searches
-      li.nav-label.mg-t-25
-        | Integrations
-      - params[:controller].include?("slacks") ? active_class = 'active show' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.integration_slacks_path, :class => "nav-link" do
-          i[data-feather="slack"]
-          span
-            | Slack
-      - params[:controller].include?("trellos") ? active_class = 'active show' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.integration_trellos_path, :class => "nav-link" do
-          i[data-feather="trello"]
-          span
-            | Trello
-      - params[:controller].include?("emails") ? active_class = 'active show' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.integration_emails_path, :class => "nav-link" do
-          i[data-feather="mail"]
-          span
-            | E-mail
-      
-      li.nav-label.mg-t-25
-        | Tools
-      - (params[:controller] == "temporaries") ? active_class = 'active' : active_class = nil
-      li.nav-item[class="#{active_class}"]
-        = link_to main_app.temporaries_path, :class => "nav-link" do
-          i[data-feather="eye"]
-          span
-            | Event Debugger
 

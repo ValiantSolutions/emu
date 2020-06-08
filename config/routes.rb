@@ -9,18 +9,10 @@ Rails.application.routes.draw do
     get 'stats', to: 'dashboard#stats', as: 'dashboard_stats'
     get 'timeline', to: 'dashboard#timeline', as: 'dashboard_timeline'
     get 'jumbotron', to: 'dashboard#jumbotron', as: 'dashboard_jumbotron'
-  
-    resources :elastic_endpoints, path: 'elastic/clusters'
-
-    namespace :integration, path: 'integrations' do
-      resources :slacks, path: 'slack'
-      resources :trellos, path: 'trello'
-      resources :emails, path: 'email'
-    end
 
     resources :jobs, only: [:index, :show]
 
-    resources :permanents, path: 'alerts' do
+    resources :permanents, path: 'manage' do
       collection do
         get 'tips/:show', to: 'alerts#tips', as: 'tips'
         get ':id/disable', to: 'permanents#disable', as: 'disable'
@@ -44,6 +36,14 @@ Rails.application.routes.draw do
       collection do
         get 'pending', to: 'accounts#pending'
       end
+    end
+
+    resources :elastic_endpoints, path: 'elastic/clusters'
+
+    namespace :integration, path: 'integrations' do
+      resources :slacks, path: 'slack'
+      resources :trellos, path: 'trello'
+      resources :emails, path: 'email'
     end
   end
   

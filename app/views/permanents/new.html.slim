@@ -1,6 +1,20 @@
 .row
-  .col-sm-10
-    = render 'shared/errors', c: @alert
-    = render 'form', alert: @alert
+  - if !ElasticEndpoint.all.empty? && !Search.where(permanent: true).empty?
+    .col-sm-10
+      = render 'shared/errors', c: @alert
+      = render 'form', alert: @alert
+  - else
+    .col-sm-8
+      .card
+        .card-body
+          h5.card-title
+            | Hold on!
+          p.card-text
+            | Before creating an alert, an Elasticsearch cluster and a search query must be defined!
+        .card-footer 
+          = link_to :new_search do
+            button.btn.btn-primary[type="button"]
+              i[data-feather="plus"]
+              |  Create a new search
 
-.backdrop
+  .backdrop

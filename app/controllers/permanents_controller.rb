@@ -22,22 +22,23 @@ class PermanentsController < AlertsController
   def new
     breadcrumb 'Create New Alert', new_permanent_path, match: :exact
 
-    if ElasticEndpoint.all.empty?
-      flash[:alert] = 'An Elasticsearch cluster must be defined prior to creating an alert!'
-      redirect_to :elastic_endpoints
-      return
-    end
+    # if ElasticEndpoint.all.empty?
+    #   flash[:alert] = 'An Elasticsearch cluster must be defined prior to creating an alert!'
+    #   redirect_to :elastic_endpoints
+    #   return
+    # end
 
-    if Search.where(permanent: true).empty?
-      flash[:alert] = 'A search must be saved prior to creating an alert!'
-      redirect_to :new_search
-      return
+    # if Search.where(permanent: true).empty?
+    #   flash[:alert] = 'A search must be saved prior to creating an alert!'
+    #   redirect_to :new_search
+    #   return
+    # end
+    if !ElasticEndpoint.all.empty? && !Search.where(permanent: true).empty?
+      @alert = Permanent.new
+      @alert.build_conditional
+      @alert.build_payload
+      3.times { @alert.actions << Action.new }
     end
-
-    @alert = Permanent.new
-    @alert.build_conditional
-    @alert.build_payload
-    3.times { @alert.actions << Action.new }
   end
 
   # GET /alerts/1/edit

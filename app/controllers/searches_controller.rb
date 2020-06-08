@@ -17,13 +17,8 @@ class SearchesController < ApplicationController
   def new
     breadcrumb 'Saved Searches', searches_path, match: :exact
     breadcrumb 'Create Search', new_search_path, match: :exact
-
-    @search = Search.new
-
-    if policy_scope(ElasticEndpoint.all).empty?
-      flash[:alert] = 'An Elasticsearch cluster must be defined prior to creating a search!'
-      redirect_to :elastic_endpoints
-      return
+    unless policy_scope(ElasticEndpoint.all).empty?
+      @search = Search.new
     end
   end
 

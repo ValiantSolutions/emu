@@ -3,25 +3,25 @@
 class ElasticEndpointsController < ApplicationController
   before_action :set_elastic_endpoint, only: %i[show edit update destroy]
 
-  breadcrumb 'Elasticsearch', '', match: :exact
+  breadcrumb 'Administration', '', match: :exact
 
   # GET /elastic_endpoints
   # GET /elastic_endpoints.json
   def index
-    breadcrumb 'Clusters', elastic_endpoints_path, match: :exact
+    breadcrumb 'Elasticsearch', elastic_endpoints_path, match: :exact
     @endpoints = policy_scope(ElasticEndpoint.all)
   end
 
   # GET /elastic_endpoints/new
   def new
-    breadcrumb 'Clusters', elastic_endpoints_path, match: :exact
+    breadcrumb 'Elasticsearch', elastic_endpoints_path, match: :exact
     breadcrumb 'New Cluster Configuration', new_elastic_endpoint_path, match: :exact
     @elastic_endpoint = ElasticEndpoint.new
   end
 
   # GET /elastic_endpoints/1/edit
   def edit
-    breadcrumb 'Clusters', elastic_endpoints_path, match: :exact
+    breadcrumb 'Elasticsearch', elastic_endpoints_path, match: :exact
     breadcrumb 'Edit Cluster', edit_elastic_endpoint_path(@elastic_endpoint), match: :exact
   end
 
@@ -36,7 +36,7 @@ class ElasticEndpointsController < ApplicationController
   # POST /elastic_endpoints
   # POST /elastic_endpoints.json
   def create
-    breadcrumb 'Clusters', elastic_endpoints_path, match: :exact
+    breadcrumb 'Elasticsearch', elastic_endpoints_path, match: :exact
     breadcrumb 'New Cluster Configuration', new_elastic_endpoint_path, match: :exact
 
     @elastic_endpoint = ElasticEndpoint.new(elastic_endpoint_params)

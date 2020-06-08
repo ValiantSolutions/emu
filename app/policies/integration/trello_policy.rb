@@ -1,4 +1,4 @@
-class Integration::TrelloPolicy < ::AllowAllPolicy
+class Integration::TrelloPolicy < ::AdminPolicy
   
   
 end

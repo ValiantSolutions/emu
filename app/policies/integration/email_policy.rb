@@ -1,3 +1,3 @@
-class Integration::EmailPolicy < ::AllowAllPolicy
+class Integration::EmailPolicy < ::AdminPolicy
   
 end
